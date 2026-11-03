@@ -22,7 +22,7 @@ module.exports = {
             node: true,
             jest: true,
           },
-          extends: ['eslint:recommended', 'plugin:react/recommended', 'prettier', 'prettier/react'],
+          extends: ['eslint:recommended', 'plugin:react/recommended', 'prettier'],
           globals: {
             process: true,
           },
@@ -35,7 +35,7 @@ module.exports = {
           plugins: ['prettier', 'import'],
           root: true,
           rules: {
-            'prettier/prettier': ['error'],
+            'prettier/prettier': ['error', { endOfLine: 'auto' }],
             'no-unexpected-multiline': 0,
             'no-duplicate-imports': ['error'],
             'no-console': 0,
@@ -59,7 +59,7 @@ module.exports = {
         },
       ],
     }),
-    react(),
+    react({ targets: { browsers: ['Chrome 70', 'Firefox 68'] } }),
     jest({
       setupFilesAfterEnv: ['<rootDir>/src/setupTests.js'],
     }),

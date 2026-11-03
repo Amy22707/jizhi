@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
 import { hot } from 'react-hot-loader';
 import { ReactP5Wrapper } from 'react-p5-wrapper';
-import { InlineAlert } from 'evergreen-ui';
 import waves from './sketchs/waves';
 import blobs from './sketchs/blobs';
 import Verses from './components/Verses';
 import ConfigMenu from './components/ConfigMenu';
 import SearchInput from './components/SearchInput';
 import ColorName from './components/ColorName';
-import { saveBackground, insertFont, fetchAndSetFont, pickColor, isDarkModeEnabled } from './utils';
+import { saveBackground, isDarkModeEnabled } from './utils';
 import Storager from './utils/storager';
-import { load } from './utils/jinrishici';
+import { findVerse, fonts, nextColor, nextVerse, resolveFont } from './utils/enhanced';
 import {
   HORIZONTAL,
   VERTICAL,
@@ -21,7 +20,7 @@ import {
 } from './constants/appConstants';
 import GlobalStyle from './components/GlobalStyle';
 
-const DEFAULT_SHICI_LIST = require('./constants/shici.json');
+const defaultColor = { name: '', hex: '#547689' };
 
 class App extends Component {
   constructor(props) {
@@ -36,12 +35,12 @@ class App extends Component {
       colorStayChecked: false,
       verses: DEFAULT_SHICI,
       versesLayout: HORIZONTAL,
-      errMessage: '',
       engineOption: GOOGLE_SEARCH,
       value: '',
       focused: false,
       fontName: DEFAULT_FONT,
-      waveColor: pickColor(false),
+      waveColor: defaultColor,
+      personalization: {},
     };
   }
 
@@ -49,21 +48,9 @@ class App extends Component {
     const hasZh = navigator.languages.includes('zh');
     document.title = hasZh ? '新标签页' : 'New Tab';
 
-    load(
-      (result) => {
-        Storager.set({ verses: result.data });
-      },
-      (err) => {
-        this.setState({ errMessage: err.errMessage });
-        const localShici =
-          DEFAULT_SHICI_LIST[Math.floor(Math.random() * DEFAULT_SHICI_LIST.length)];
-        Storager.set({ verses: localShici });
-      }
-    );
-
     Storager.get(
       [
-        'verses',
+        'personalization',
         'versesLayout',
         'selected',
         'colorStayChecked',
@@ -71,41 +58,82 @@ class App extends Component {
         'engineOption',
         'showSearchBarChecked',
         'fontName',
-        'fonts',
         'colorMode',
       ],
-      (res) => {
-        if (res.fonts && res.fontName === res.fonts.fontName) {
-          insertFont(res.fonts.value);
-        }
-
+      async (res) => {
+        const saved = res.personalization || {};
+        const personalization = { ...saved, colorFont: resolveFont(saved.colorFont) || '' };
+        const fontName = resolveFont(res.fontName) || DEFAULT_FONT;
+        const colorMode = res.colorMode || 'os';
+        const isDarkMode = colorMode === 'os' ? isDarkModeEnabled() : colorMode === 'dark';
+        const verses =
+          findVerse(personalization.verse) ||
+          (await nextVerse(fontName, personalization.script)) ||
+          DEFAULT_SHICI;
+        const waveColor = await nextColor(
+          isDarkMode,
+          verses,
+          personalization.color,
+          personalization.custom
+        );
         this.setState({
           showSearchBarChecked: !!res.showSearchBarChecked,
-          colorMode: res.colorMode,
+          colorMode,
+          personalization,
           colorStayChecked: !!res.colorStayChecked,
           defaultPlayChecked: res.defaultPlayChecked !== false,
           isVerticalVerses: res.versesLayout === VERTICAL,
           isPlaying: res.defaultPlayChecked !== false,
-          verses: res.verses || DEFAULT_SHICI,
+          verses,
           selected: res.selected || WAVES,
           engineOption: res.engineOption || GOOGLE_SEARCH,
-          fontName: res.fontName || DEFAULT_FONT,
-          isDarkMode: res.colorMode === 'os' ? isDarkModeEnabled() : res.colorMode === 'dark',
-          waveColor: pickColor(!!this.state.isDarkMode),
+          fontName,
+          isDarkMode,
+          waveColor: waveColor || defaultColor,
         });
       }
     );
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.colorMode !== this.state.colorMode) {
-      this.setState(() => ({
-        isDarkMode:
-          this.state.colorMode === 'os' ? isDarkModeEnabled() : this.state.colorMode === 'dark',
-        waveColor: pickColor(this.state.isDarkMode),
-      }));
-    }
-  }
+  refreshColor = async () => {
+    const request = (this.colorRequest = (this.colorRequest || 0) + 1);
+    const { isDarkMode, verses, personalization } = this.state;
+    const waveColor = await nextColor(
+      isDarkMode,
+      verses,
+      personalization.color,
+      personalization.custom
+    );
+    if (request === this.colorRequest) this.setState({ waveColor: waveColor || defaultColor });
+  };
+
+  refreshVerse = async () => {
+    const request = (this.verseRequest = (this.verseRequest || 0) + 1);
+    const { fontName, personalization } = this.state;
+    const verses =
+      findVerse(personalization.verse) ||
+      (await nextVerse(fontName, personalization.script)) ||
+      DEFAULT_SHICI;
+    if (request === this.verseRequest) this.setState({ verses }, this.refreshColor);
+  };
+
+  changePersonalization = (key, value) => {
+    this.setState(
+      ({ personalization }) => ({ personalization: { ...personalization, [key]: value } }),
+      () => {
+        const { personalization, fontName } = this.state;
+        Storager.set({ personalization });
+        if (
+          key === 'verse' ||
+          (key === 'script' && fontName === 'nyushu' && !personalization.verse)
+        ) {
+          this.refreshVerse();
+        } else if (key === 'color' || key === 'custom') {
+          this.refreshColor();
+        }
+      }
+    );
+  };
 
   handlePlayPauseSelect = () => this.setState((state) => ({ isPlaying: !state.isPlaying }));
 
@@ -121,7 +149,13 @@ class App extends Component {
   };
 
   handleColorModeOptionChange = (colorMode) =>
-    this.setState({ colorMode }, () => Storager.set({ colorMode }));
+    this.setState(
+      { colorMode, isDarkMode: colorMode === 'os' ? isDarkModeEnabled() : colorMode === 'dark' },
+      () => {
+        Storager.set({ colorMode });
+        this.refreshColor();
+      }
+    );
 
   handleVersesLayoutChange = () => {
     this.setState(
@@ -164,7 +198,8 @@ class App extends Component {
     });
   };
 
-  handleKeyDown = ({ keyCode, altKey }) => {
+  handleKeyDown = ({ keyCode, altKey, target }) => {
+    if (target.closest('input, select, button, a, [role="menuitem"]')) return;
     // space
     if (keyCode === 32) this.setState((state) => ({ isPlaying: !state.isPlaying }));
     // S + alt
@@ -172,30 +207,18 @@ class App extends Component {
 
     // left or right arrow keys
     if (keyCode === 37 || keyCode === 39) {
-      this.setState(() => ({ waveColor: pickColor(this.state.isDarkMode) }));
+      this.refreshColor();
     }
   };
 
-  handleFontTypeChange = (fontName) => {
-    if (fontName !== DEFAULT_FONT) {
-      this.setState(() => ({ isFontLoading: true }));
-
-      Storager.get(['fonts'], (res) => {
-        if (res.fonts && res.fonts.fontName === fontName) {
-          insertFont(res.fonts.value);
-          this.setState(() => ({ isFontLoading: false }));
-        } else {
-          fetchAndSetFont(fontName)
-            .then(() => {
-              this.setState(() => ({ isFontLoading: false }));
-            })
-            .catch((err) => console.log(err));
-        }
-      });
-    }
-
-    this.setState({ fontName }, () => Storager.set({ fontName }));
-  };
+  handleFontTypeChange = (fontName) =>
+    this.setState({ fontName }, () => {
+      Storager.set({ fontName });
+      if (!this.state.personalization.verse) {
+        if (fontName === 'nyushu') this.refreshVerse();
+        else this.verseRequest = (this.verseRequest || 0) + 1;
+      }
+    });
 
   handleEngineOptionChange = (engineOption) =>
     this.setState({ engineOption }, () => Storager.set({ engineOption }));
@@ -215,16 +238,19 @@ class App extends Component {
       defaultPlayChecked,
       colorStayChecked,
       selected,
-      errMessage,
       engineOption,
       value,
       focused,
       fontName,
       isDarkMode,
       waveColor,
-      isFontLoading,
       colorMode,
+      personalization,
     } = this.state;
+    const followsPoemFont = personalization.followPoemFont ?? !personalization.colorFont;
+    const colorFont = followsPoemFont ? fontName : personalization.colorFont || DEFAULT_FONT;
+    const originalScript = personalization.nushuOriginalScript || 'traditional';
+    const originalFont = fonts[personalization.nushuOriginalFont] || fonts[DEFAULT_FONT];
     const sketches = { blobs, waves };
 
     return selected ? (
@@ -233,7 +259,13 @@ class App extends Component {
         {selected === WAVES && (
           <ColorName
             key={waveColor.name}
-            fontName={fontName}
+            fontName={fonts[colorFont]}
+            originalScript={originalScript}
+            originalFont={
+              colorFont === 'nyushu' && personalization.showNushuColorOriginal
+                ? originalFont
+                : undefined
+            }
             colorName={waveColor.name}
             colorStayChecked={colorStayChecked}
             isDarkMode={isDarkMode}
@@ -242,11 +274,16 @@ class App extends Component {
         <Verses
           key={isVerticalVerses}
           bgOption={selected}
-          verses={verses}
+          verses={verses.origin ? verses : { ...verses, origin: verses }}
+          fontSize={personalization.size}
+          script={personalization.script}
+          originalScript={originalScript}
+          showNushuOriginal={fontName === 'nyushu' && !!personalization.showNushuOriginal}
+          originalFont={originalFont}
           isVerticalVerses={isVerticalVerses}
           engineOption={engineOption}
           isDarkMode={isDarkMode}
-          fontName={fontName}
+          fontName={fonts[fontName]}
         />
         <ReactP5Wrapper
           sketch={sketches[selected]}
@@ -275,17 +312,10 @@ class App extends Component {
           colorMode={colorMode}
           fontName={fontName}
           onFontTypeChange={this.handleFontTypeChange}
-          isFontLoading={isFontLoading}
+          personalization={personalization}
+          onPersonalizationChange={this.changePersonalization}
           waveColor={waveColor}
-        >
-          {errMessage && (
-            <div style={{ height: 30 }}>
-              <InlineAlert intent="warning" marginLeft={20} marginRight={20}>
-                {errMessage}
-              </InlineAlert>
-            </div>
-          )}
-        </ConfigMenu>
+        />
         {showSearchBarChecked && (
           <SearchInput
             value={value}

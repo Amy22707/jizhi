@@ -5,15 +5,22 @@ const storageLocal = {
     const output = {};
     output[key] = obj[key];
     const value = JSON.stringify(output);
-    localStorage.setItem(key, value);
+    try {
+      localStorage.setItem(key, value);
+    } catch {
+      // Settings remain usable for this tab if storage is full.
+    }
     if (callback) callback();
   },
   get: (keys, callback) => {
     let resOutput = {};
     keys.forEach((key) => {
-      let result = localStorage.getItem(key);
-      result = JSON.parse(result) || {};
-      resOutput = { ...resOutput, ...result };
+      try {
+        const result = JSON.parse(localStorage.getItem(key));
+        if (result && typeof result === 'object') resOutput[key] = result[key];
+      } catch {
+        // Ignore damaged or inaccessible settings.
+      }
     });
 
     if (callback) callback(resOutput);

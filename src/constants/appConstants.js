@@ -12,7 +12,7 @@ export const WAVES = 'waves';
 export const BLOBS = 'blobs';
 export const HORIZONTAL = 'horizontal';
 export const VERTICAL = 'vertical';
-export const DEFAULT_FONT = 'JXZhuoKai';
+export const DEFAULT_FONT = 'wenkai';
 
 export const FONTS_INFO = {
   JXZhuoKai: {
@@ -30,20 +30,16 @@ export const FONTS_INFO = {
 };
 
 export const JIZHI_LINKS = {
-  jinrishici: {
-    name: '今日诗词 API',
-    link: 'https://www.jinrishici.com/',
-  },
   home: {
-    name: 'Github 主页',
-    link: 'https://github.com/unicar9/jizhi',
-  },
-  changelog: {
-    name: '更新日志',
-    link: 'https://github.com/unicar9/jizhi/blob/master/CHANGELOG.md',
+    name: '增强版 GitHub 仓库',
+    link: 'https://github.com/Amy22707/jizhi',
   },
   issues: {
     name: '提交反馈',
-    link: 'https://github.com/unicar9/jizhi/issues',
+    link: 'https://github.com/Amy22707/jizhi/issues',
+  },
+  upstream: {
+    name: '原版几枝说明',
+    link: 'https://github.com/liminalpurr/jizhi#readme',
   },
 };

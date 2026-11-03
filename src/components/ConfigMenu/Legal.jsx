@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Paragraph, Avatar, Heading, Pane, HeartIcon } from 'evergreen-ui';
 import styled, { keyframes } from 'styled-components';
 import { WAVES, JIZHI_LINKS } from '../../constants/appConstants';
+import { colorOptions, verseOptions } from '../../utils/enhanced';
 import { version } from '../../../package.json';
 import CustomLink from './CustomLink';
 
@@ -31,7 +32,7 @@ const Legal = ({ waveColor, selected }) => {
       <Pane display="flex" alignItems="center">
         <Avatar src="/static/icons/jizhi-64.png" size={32} name="几枝" />
         <Heading size={500} marginLeft={10}>
-          几枝 v{version}
+          几枝·增强版 v{version}
         </Heading>
       </Pane>
 
@@ -41,15 +42,19 @@ const Legal = ({ waveColor, selected }) => {
         </Paragraph>
       )}
       <Paragraph size={400} marginTop="default">
-        本扩展使用了
-        <CustomLink url={JIZHI_LINKS.jinrishici.link} name={JIZHI_LINKS.jinrishici.name} />
+        <CustomLink url={JIZHI_LINKS.home.link} name={JIZHI_LINKS.home.name} />
+        <CustomLink url={JIZHI_LINKS.issues.link} name={JIZHI_LINKS.issues.name} />
       </Paragraph>
       <Paragraph size={400} marginTop="default">
-        欢迎访问几枝
-        <CustomLink url={JIZHI_LINKS.home.link} name={JIZHI_LINKS.home.name} />
-        查看
-        <CustomLink url={JIZHI_LINKS.changelog.link} name={JIZHI_LINKS.changelog.name} />和
-        <CustomLink url={JIZHI_LINKS.issues.link} name={JIZHI_LINKS.issues.name} />
+        几枝·增强版基于 Unicar 和贡献者开发的几枝。诗词与传统色均可离线使用。
+        <CustomLink url={JIZHI_LINKS.upstream.link} name={JIZHI_LINKS.upstream.name} />
+      </Paragraph>
+      <Paragraph size={400} marginTop="default">
+        离线诗库收录 {verseOptions.length.toLocaleString('zh-CN')} 条诗句，摘自
+        <CustomLink url="https://github.com/chinese-poetry/chinese-poetry" name="Chinese Poetry" />
+        的唐诗和宋词。波浪配色库收录 {colorOptions.length.toLocaleString('zh-CN')}{' '}
+        种传统色，来自原版几枝和
+        <CustomLink url="https://github.com/zerosoul/chinese-colors" name="Chinese Colors" />。
       </Paragraph>
       <Paragraph size={400} marginTop="default">
         <HeartPulse color="#e25555" size={14} marginRight={5} />

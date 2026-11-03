@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled, { css, keyframes } from 'styled-components';
 import { WAVES } from '../../constants/appConstants';
+import { displayVerse } from '../../utils/verseScript';
 import VersesContent from './VersesContent';
 
 const fadeIn = keyframes`
@@ -29,6 +30,9 @@ const VersesWrapper = styled.div`
           top: 40vh;
           transform: translate(-50%, -50%);
           writing-mode: vertical-rl;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
           animation: ${fadeIn} 500ms ease-in;
         `
       : css`
@@ -38,16 +42,37 @@ const VersesWrapper = styled.div`
 `;
 
 const Verses = (props) => {
-  const { verses, engineOption, bgOption, isVerticalVerses, fontName, isDarkMode } = props;
+  const {
+    verses,
+    engineOption,
+    bgOption,
+    isVerticalVerses,
+    fontName,
+    isDarkMode,
+    fontSize,
+    showNushuOriginal,
+    originalScript,
+    originalFont,
+    script,
+  } = props;
 
   return (
     <VersesWrapper
+      lang={script === 'traditional' ? 'zh-Hant' : script === 'simplified' ? 'zh-Hans' : undefined}
       isVerticalVerses={isVerticalVerses}
       isDarkMode={isDarkMode}
       fontName={fontName}
       isWaves={bgOption === WAVES}
     >
-      <VersesContent verses={verses} engineOption={engineOption} isVertical={isVerticalVerses} />
+      <VersesContent
+        fontSize={fontSize}
+        originalFont={originalFont}
+        original={showNushuOriginal ? displayVerse(verses, originalScript) : undefined}
+        originalScript={originalScript}
+        verses={displayVerse(verses, script)}
+        engineOption={engineOption}
+        isVertical={isVerticalVerses}
+      />
     </VersesWrapper>
   );
 };
@@ -58,6 +83,11 @@ Verses.propTypes = {
   isVerticalVerses: PropTypes.bool,
   engineOption: PropTypes.string,
   fontName: PropTypes.string,
+  fontSize: PropTypes.number,
+  showNushuOriginal: PropTypes.bool,
+  originalScript: PropTypes.string,
+  originalFont: PropTypes.string,
+  script: PropTypes.string,
   isDarkMode: PropTypes.bool,
 };
 

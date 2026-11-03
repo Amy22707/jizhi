@@ -60,12 +60,13 @@ class Mountain {
     p.noiseDetail(1.7, 1.3);
 
     p.beginShape();
-    for (let x = 0; x <= p.width + 25; x += 25) {
+    // Sample twice as often at the same noise scale.
+    for (let x = 0; x <= p.width + 25; x += 12.5) {
       const yoff = p.map(p.noise(xoff + this.offset, this.t + this.offset), 0, 1, 0, 200);
       const y = this.y - yoff;
       p.vertex(x, y);
 
-      xoff += 0.08;
+      xoff += 0.04;
     }
     p.vertex(p.width + 100, p.height);
     p.vertex(0, p.height);
@@ -76,9 +77,8 @@ class Mountain {
 }
 
 function growMountains(p, mountains, hexColor) {
-  const c = p.color(hexColor);
-
   new Array(5).fill(1).map((_, i) => {
+    const c = p.color(hexColor);
     const a = 255 - 50 * i;
     c.setAlpha(a);
     const h = p.height - 50 * i;

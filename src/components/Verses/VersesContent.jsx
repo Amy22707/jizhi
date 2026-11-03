@@ -5,7 +5,10 @@ import styled, { css } from 'styled-components';
 import { pureWords } from '../../utils';
 
 const Content = styled.div`
-  font-size: calc(30px + 1vw);
+  font-size: calc(
+    ${({ fontSize }) => (Number.isFinite(fontSize) ? Math.min(48, Math.max(18, fontSize)) : 30)}px +
+      1vw
+  );
   width: 80vw;
   word-break: keep-all;
   ${(props) =>
@@ -16,9 +19,25 @@ const Content = styled.div`
     `};
 `;
 
+const OriginalOrigin = styled.div`
+  font-size: 0.78em;
+  margin-inline-start: 0.5em;
+  opacity: 0.85;
+`;
+
+const Original = styled.div`
+  font-family: ${({ fontName }) => fontName};
+  font-size: calc(14px + 0.45vw);
+  line-height: 1.5;
+  margin-block-start: 1.2em;
+  opacity: 0.78;
+  text-align: center;
+  word-break: keep-all;
+`;
+
 const Origin = styled.div`
   display: flex;
-  margin-top: 1em;
+  margin-top: ${({ hasOriginal }) => (hasOriginal ? '0.25em' : '1em')};
   font-size: calc(10px + 1vw);
   justify-content: center;
   align-items: center;
@@ -27,8 +46,7 @@ const Origin = styled.div`
     css`
       margin: 0;
       margin-right: 10px;
-      justify-content: flex-start;
-      flex-wrap: wrap;
+      text-align: center;
     `};
 `;
 
@@ -63,6 +81,10 @@ const VersesContent = (props) => {
     },
     engineOption,
     isVertical,
+    fontSize,
+    original,
+    originalFont,
+    originalScript,
   } = props;
 
   const searchLink = `${engineOption}${author} ${title}`;
@@ -70,8 +92,10 @@ const VersesContent = (props) => {
 
   return (
     <>
-      <Content isVertical={isVertical}>{filteredContent}</Content>
-      <Origin isVertical={isVertical}>
+      <Content fontSize={fontSize} isVertical={isVertical}>
+        {filteredContent}
+      </Content>
+      <Origin isVertical={isVertical} hasOriginal={!!original}>
         <a href={searchLink} target="_blank" rel="noopener noreferrer">
           <span className="title">{`「${title}」`}</span>
         </a>
@@ -80,6 +104,16 @@ const VersesContent = (props) => {
           <Icon size={14} icon="search-text" color="black" />
         </Search>
       </Origin>
+      {original && (
+        <Original
+          aria-label="汉字原文"
+          fontName={originalFont}
+          lang={originalScript === 'simplified' ? 'zh-Hans' : 'zh-Hant'}
+        >
+          {isVertical ? pureWords(original.content) : original.content}
+          <OriginalOrigin>{`「${original.origin.title}」 · ${original.origin.author}`}</OriginalOrigin>
+        </Original>
+      )}
     </>
   );
 };
@@ -87,6 +121,13 @@ const VersesContent = (props) => {
 VersesContent.propTypes = {
   verses: PropTypes.object,
   isVertical: PropTypes.bool,
+  fontSize: PropTypes.number,
+  original: PropTypes.shape({
+    content: PropTypes.string.isRequired,
+    origin: PropTypes.shape({ author: PropTypes.string, title: PropTypes.string }).isRequired,
+  }),
+  originalFont: PropTypes.string,
+  originalScript: PropTypes.string,
   engineOption: PropTypes.string,
   fontName: PropTypes.string,
   isDarkMode: PropTypes.bool,

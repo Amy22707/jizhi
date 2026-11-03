@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled, { css, keyframes } from 'styled-components';
+import { convertScript } from '../utils/verseScript';
 
 const fadeOut = keyframes`
   0% {
@@ -35,10 +36,35 @@ const Wrapper = styled.div`
         `};
 `;
 
-const ColorName = ({ colorName, colorStayChecked, fontName, isDarkMode }) => {
+const Original = styled.span`
+  position: absolute;
+  right: 75%;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: ${({ fontName }) => fontName};
+  font-size: 0.32em;
+`;
+
+const ColorName = ({
+  colorName,
+  colorStayChecked,
+  fontName,
+  isDarkMode,
+  originalFont,
+  originalScript,
+}) => {
   return (
     <Wrapper fontName={fontName} colorStayChecked={colorStayChecked} isDarkMode={isDarkMode}>
       {colorName}
+      {originalFont && (
+        <Original
+          aria-label="颜色名原文"
+          fontName={originalFont}
+          lang={originalScript === 'simplified' ? 'zh-Hans' : 'zh-Hant'}
+        >
+          {convertScript(colorName, originalScript)}
+        </Original>
+      )}
     </Wrapper>
   );
 };
@@ -47,6 +73,8 @@ ColorName.propTypes = {
   colorName: PropTypes.string,
   colorStayChecked: PropTypes.bool,
   fontName: PropTypes.string,
+  originalFont: PropTypes.string,
+  originalScript: PropTypes.string,
   isDarkMode: PropTypes.bool,
 };
 

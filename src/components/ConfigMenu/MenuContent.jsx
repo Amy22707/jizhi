@@ -2,19 +2,18 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   Pane,
+  Button,
   Menu,
   Tablist,
   Switch,
   SidebarTab,
   SegmentedControl,
-  Spinner,
-  Text,
   InlineAlert,
 } from 'evergreen-ui';
 import styled from 'styled-components';
-import { WAVES } from '../../constants/appConstants';
+import { DEFAULT_FONT, WAVES } from '../../constants/appConstants';
 import Legal from './Legal';
-import FontStatement from './FontStatement';
+import Personalization from './Personalization';
 import SaveBgMenuItem from './SaveBgMenuItem';
 
 const SwitchWrapper = styled.div`
@@ -28,6 +27,7 @@ const SegmentedControlWrapper = styled.div`
 
 const MenuContent = (props) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [openFontPicker, setOpenFontPicker] = useState('');
 
   const {
     isPlaying,
@@ -48,7 +48,8 @@ const MenuContent = (props) => {
     onColorModeOptionChange,
     fontName,
     onFontTypeChange,
-    isFontLoading,
+    personalization,
+    onPersonalizationChange,
     waveColor,
   } = props;
 
@@ -84,11 +85,72 @@ const MenuContent = (props) => {
     },
   ];
 
-  const fontOptions = [
-    { label: '江西拙楷', value: 'JXZhuoKai' },
-    { label: '欣意吉祥宋', value: 'JiXiangSong' },
-    { label: '方正细金陵', value: 'FZXiJinLJW' },
+  const fontGroups = [
+    {
+      title: '简体优先',
+      options: [
+        { label: '霞鹜臻楷', value: 'zhenkai' },
+        { label: '马善政毛笔楷书', value: 'mashan' },
+        { label: '站酷小薇宋体', value: 'xiaowei' },
+      ],
+    },
+    {
+      title: '繁體優先',
+      options: [{ label: 'Noto Serif TC 繁體宋體', value: 'notoseriftc' }],
+    },
+    {
+      title: '简繁皆可',
+      options: [
+        { label: '香萃刻宋', value: 'kesong' },
+        { label: '朱雀仿宋', value: 'zhuque' },
+        { label: '霞鹜文楷', value: 'wenkai' },
+      ],
+    },
+    { title: '女书', options: [{ label: '女书凤栖 · Nyushu', value: 'nyushu' }] },
   ];
+
+  const fontOptions = fontGroups.flatMap(({ options }) => options);
+  const originalFontOptions = fontOptions.filter(({ value }) => value !== 'nyushu');
+  const followsPoemFont = personalization.followPoemFont ?? !personalization.colorFont;
+  const colorFont = followsPoemFont ? fontName : personalization.colorFont || DEFAULT_FONT;
+  const usesNushuColor = colorFont === 'nyushu';
+  const renderFontGroups = (selectedFont, onChange) =>
+    fontGroups.map(({ title, options }) => (
+      <Menu.Group key={title} title={title}>
+        <Menu.OptionsGroup options={options} selected={selectedFont} onChange={onChange} />
+      </Menu.Group>
+    ));
+
+  const renderFontPicker = (title, key, options, fallback) => {
+    const selected = personalization[key] || fallback;
+    const option = options.find(({ value }) => value === selected);
+    const isOpen = openFontPicker === key;
+    return (
+      <Menu.Group title={title}>
+        <Pane marginX={16}>
+          <Button
+            width="100%"
+            aria-expanded={isOpen}
+            onClick={() => setOpenFontPicker(isOpen ? '' : key)}
+          >
+            {option ? option.label : options[0].label}
+          </Button>
+        </Pane>
+        {isOpen && (
+          <Pane maxHeight={160} overflowY="auto">
+            <Menu.OptionsGroup
+              options={options}
+              selected={selected}
+              onChange={(value) => {
+                onPersonalizationChange(key, value);
+                setOpenFontPicker('');
+              }}
+            />
+          </Pane>
+        )}
+      </Menu.Group>
+    );
+  };
 
   const switchOptions = [
     // {
@@ -199,25 +261,109 @@ const MenuContent = (props) => {
     {
       tabName: '字体',
       tabContent: (
-        <Menu.Group title="选择字体">
-          <SegmentedControlWrapper>
-            <SegmentedControl
-              width={280}
-              options={fontOptions}
-              value={fontName}
-              onChange={onFontTypeChange}
-            />
-            {isFontLoading ? (
-              <Pane height={30} width={280} marginBottom={-10} marginTop={10} display="flex">
-                <Spinner size={20} marginRight={5} />
-                <Text>远程加载中……</Text>
-              </Pane>
-            ) : (
-              <FontStatement fontName={fontName} />
-            )}
-          </SegmentedControlWrapper>
-        </Menu.Group>
+        <>
+          <Menu.Group title="诗词字形">
+            <Pane marginX={16}>
+              <SegmentedControl
+                width="100%"
+                options={[
+                  { value: 'original', label: '保留原文' },
+                  { value: 'simplified', label: '简体' },
+                  { value: 'traditional', label: '繁體' },
+                ]}
+                value={personalization.script || 'original'}
+                onChange={(value) => onPersonalizationChange('script', value)}
+              />
+            </Pane>
+          </Menu.Group>
+          <Menu.Divider />
+          {fontName === 'nyushu' && (
+            <>
+              <Menu.Group title="女书">
+                <Pane marginX={16} paddingY={4}>
+                  <SwitchWrapper>
+                    <label htmlFor="show-nushu-original">显示诗句、作者和篇名原文</label>
+                    <Switch
+                      id="show-nushu-original"
+                      checked={!!personalization.showNushuOriginal}
+                      onChange={(event) =>
+                        onPersonalizationChange('showNushuOriginal', event.target.checked)
+                      }
+                    />
+                  </SwitchWrapper>
+                </Pane>
+              </Menu.Group>
+              <Menu.Divider />
+            </>
+          )}
+          <Menu.Group title="诗词字体" />
+          {renderFontGroups(fontName, onFontTypeChange)}
+          <Menu.Divider />
+          <Menu.Group title="颜色名字体">
+            <Pane marginX={16} paddingY={4}>
+              <SwitchWrapper>
+                <label htmlFor="follow-poem-font">与诗词字体相同</label>
+                <Switch
+                  id="follow-poem-font"
+                  checked={followsPoemFont}
+                  onChange={(event) =>
+                    onPersonalizationChange('followPoemFont', event.target.checked)
+                  }
+                />
+              </SwitchWrapper>
+            </Pane>
+          </Menu.Group>
+          {!followsPoemFont &&
+            renderFontGroups(colorFont, (value) => onPersonalizationChange('colorFont', value))}
+          {usesNushuColor && (
+            <Pane marginX={16} paddingY={8}>
+              <SwitchWrapper>
+                <label htmlFor="show-nushu-color-original">显示颜色名原文</label>
+                <Switch
+                  id="show-nushu-color-original"
+                  checked={!!personalization.showNushuColorOriginal}
+                  onChange={(event) =>
+                    onPersonalizationChange('showNushuColorOriginal', event.target.checked)
+                  }
+                />
+              </SwitchWrapper>
+            </Pane>
+          )}
+          {(fontName === 'nyushu' || usesNushuColor) && (
+            <>
+              <Menu.Group title="原文字形（诗句和色名）">
+                <Pane marginX={16}>
+                  <SegmentedControl
+                    width="100%"
+                    options={[
+                      { value: 'simplified', label: '简体' },
+                      { value: 'traditional', label: '繁體' },
+                    ]}
+                    value={personalization.nushuOriginalScript || 'traditional'}
+                    onChange={(value) => onPersonalizationChange('nushuOriginalScript', value)}
+                  />
+                </Pane>
+              </Menu.Group>
+              {renderFontPicker(
+                '原文字体（诗句和色名）',
+                'nushuOriginalFont',
+                originalFontOptions,
+                'wenkai'
+              )}
+            </>
+          )}
+          <Menu.Divider />
+          {fontName === 'nyushu' && (
+            <InlineAlert intent="none" margin={12}>
+              凤栖会逐字显示诗句。没有女书对应字形的字会显示为汉字。
+            </InlineAlert>
+          )}
+        </>
       ),
+    },
+    {
+      tabName: '个性化',
+      tabContent: <Personalization settings={personalization} onChange={onPersonalizationChange} />,
     },
     { tabName: '关于', tabContent: <Legal waveColor={waveColor} selected={selected} /> },
   ];
@@ -237,7 +383,7 @@ const MenuContent = (props) => {
           </SidebarTab>
         ))}
       </Tablist>
-      <Pane width={350} background="tint1">
+      <Pane width={350} background="tint1" overflowY="auto">
         {tabs.map(({ tabName, tabContent }, index) => (
           <Pane
             key={tabName}
@@ -275,7 +421,8 @@ MenuContent.propTypes = {
   onColorModeOptionChange: PropTypes.func,
   fontName: PropTypes.string,
   onFontTypeChange: PropTypes.func,
-  isFontLoading: PropTypes.bool,
+  personalization: PropTypes.object.isRequired,
+  onPersonalizationChange: PropTypes.func.isRequired,
   waveColor: PropTypes.object,
 };
 
