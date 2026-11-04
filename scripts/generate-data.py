@@ -66,6 +66,26 @@ for file, dynasty, tier, source in [
             verses[key] = verse
             works_seen.add(work)
 verses = list(verses.values())[:8500]
+# Keep a reviewed second excerpt from the already represented work.
+# 《全唐诗》卷五 lists the title as 《如意娘》.
+ruyiniang = next(
+    work for work in load(WORK / 'tang-2.json')
+    if work['author'] == '則天皇后' and work['title'] == '雜曲歌辭 如意娘'
+)
+couplet = '不信比來長下淚，開箱驗取石榴裙。'
+assert couplet in ruyiniang['paragraphs']
+key = re.sub('[，、。！？]', '', couplet)
+reviewed_id = hashlib.sha256(key.encode()).hexdigest()[:20]
+if not any(verse['id'] == reviewed_id for verse in verses):
+    verses.append(dict(
+        id=reviewed_id, content=couplet, author=ruyiniang['author'],
+        title='如意娘', dynasty='唐', source='chinese-poetry:poet.tang.2000',
+        tier='extended', tags=tags(couplet),
+    ))
+# Use the familiar author name while retaining source titles and stable IDs.
+for verse in verses:
+    if verse['author'] in ('則天皇后', '则天皇后'):
+        verse['author'] = '武则天'
 assert 5000 <= len(verses) <= 10000
 save(OUT / 'enhanced-verses.json', verses)
 

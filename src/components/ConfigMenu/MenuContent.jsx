@@ -12,7 +12,13 @@ import {
   InlineAlert,
 } from 'evergreen-ui';
 import styled from 'styled-components';
-import { DEFAULT_COLOR_NAME_SIZE, DEFAULT_FONT, WAVES } from '../../constants/appConstants';
+import { requestDataConsent } from '../../utils/networkConsent';
+import {
+  DEFAULT_COLOR_NAME_SIZE,
+  DEFAULT_FONT,
+  SEARCH_ENGINES,
+  WAVES,
+} from '../../constants/appConstants';
 import Legal from './Legal';
 import Personalization from './Personalization';
 import SaveBgMenuItem from './SaveBgMenuItem';
@@ -64,18 +70,6 @@ const MenuContent = (props) => {
   const bgOptions = [
     { label: 'Waves', value: 'waves' },
     { label: 'Blobs', value: 'blobs' },
-  ];
-
-  const engineOptions = [
-    {
-      label: 'Google',
-      value: 'https://www.google.com/search?q=',
-    },
-    { label: 'Baidu', value: 'https://www.baidu.com/s?wd=' },
-    {
-      label: 'Bing',
-      value: 'https://www.bing.com/search?q=',
-    },
   ];
 
   const colorModeOptions = [
@@ -215,11 +209,33 @@ const MenuContent = (props) => {
           </Menu.Group>
           <Menu.Divider />
 
+          {personalization.showShortcuts === true && (
+            <>
+              <Menu.Group title="常用网址">
+                <Pane marginX={16} marginBottom={10}>
+                  <SwitchWrapper>
+                    <label htmlFor="online-shortcut-icons">联网加载网站图标</label>
+                    <Switch
+                      id="online-shortcut-icons"
+                      checked={personalization.onlineShortcutIcons === true}
+                      onChange={async (event) => {
+                        const checked = event.target.checked;
+                        const allowed = checked && (await requestDataConsent('browsingActivity'));
+                        onPersonalizationChange('onlineShortcutIcons', allowed);
+                      }}
+                    />
+                  </SwitchWrapper>
+                  <Text size={300}>开启后，浏览器会向你固定的网站请求其图标。</Text>
+                </Pane>
+              </Menu.Group>
+              <Menu.Divider />
+            </>
+          )}
           <Menu.Group title="搜索引擎">
             <SegmentedControlWrapper>
               <SegmentedControl
                 width={280}
-                options={engineOptions}
+                options={SEARCH_ENGINES}
                 value={engineOption}
                 onChange={onEngineOptionChange}
               />

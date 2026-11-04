@@ -1,0 +1,55 @@
+name: Build browser release packages
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --legacy-peer-deps --ignore-scripts
+      - run: npm run lint
+      - run: npm run test:random
+      - run: npm run build:all
+      - run: npm run verify:builds
+      - run: npm run lint:firefox
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jizhi-browser-packages
+          if-no-files-found: error
+          path: |
+            builds/chrome.zip
+            builds/edge.zip
+            builds/firefox.zip
+            builds/firefox-source.zip
+
+  attach-to-release:
+    if: github.event_name == 'release'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: jizhi-browser-packages
+          path: packages
+      - name: Attach packages to the published release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          gh release upload --repo "$GITHUB_REPOSITORY" -- "$RELEASE_TAG" \
+            packages/chrome.zip packages/edge.zip packages/firefox.zip packages/firefox-source.zip

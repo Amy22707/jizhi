@@ -1,4 +1,9 @@
 export const GOOGLE_SEARCH = 'https://www.google.com/search?q=';
+export const SEARCH_ENGINES = [
+  { label: 'Google', value: GOOGLE_SEARCH },
+  { label: 'Baidu', value: 'https://www.baidu.com/s?wd=' },
+  { label: 'Bing', value: 'https://www.bing.com/search?q=' },
+];
 
 export const DEFAULT_SHICI = {
   content: '红豆生南国，春来发几枝。',
@@ -31,6 +36,10 @@ export const FONTS_INFO = {
 };
 
 export const JIZHI_LINKS = {
+  privacy: {
+    name: '隐私说明',
+    link: 'https://github.com/Amy22707/jizhi/blob/master/PRIVACY.md',
+  },
   home: {
     name: '增强版 GitHub 仓库',
     link: 'https://github.com/Amy22707/jizhi',

@@ -4,6 +4,8 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const chrome = process.argv[2] || 'C:/Program Files/Google/Chrome/Application/chrome.exe';
+const target = process.argv[3] || 'chrome';
+if (!['chrome', 'edge'].includes(target)) throw new Error('Target must be chrome or edge');
 const profile = fs.mkdtempSync(path.join(os.tmpdir(), 'jizhi-smoke-'));
 const child = spawn(chrome, ['--headless=new', '--no-first-run', '--disable-background-networking',
   '--enable-unsafe-extension-debugging', '--remote-debugging-pipe', '--user-data-dir=' + profile,
@@ -44,7 +46,7 @@ function send(method, params = {}, sessionId) {
   });
 }
 async function main() {
-  const { id } = await send('Extensions.loadUnpacked', { path: path.resolve('builds/build_chrome') });
+  const { id } = await send('Extensions.loadUnpacked', { path: path.resolve('builds/build_' + target) });
   const { targetId } = await send('Target.createTarget', { url: 'about:blank' });
   const { sessionId } = await send('Target.attachToTarget', { targetId, flatten: true });
   const call = (method, params) => send(method, params, sessionId);
@@ -60,7 +62,7 @@ async function main() {
   const history = new Set();
   for (let i = 0; i < 21; i++) {
     const loaded = new Promise((resolve) => navigations.set(sessionId, resolve));
-    if (!i) await call('Page.navigate', { url: 'chrome-extension://' + id + '/index.html' });
+    if (!i) await call('Page.navigate', { url: target === 'edge' ? 'edge://newtab/' : 'chrome://newtab/' });
     else await call('Page.reload');
     await Promise.race([loaded, new Promise((_, reject) => {
       const timer = setTimeout(() => reject(new Error('Page did not load')), 5000);
@@ -80,6 +82,10 @@ async function main() {
     assert.ok(!history.has(text), 'Unexpected repeat: ' + text);
     history.add(text);
   }
+  assert.match(await evaluate('location.href'), new RegExp('^chrome-extension://' + id + '/'));
+  const frame = await evaluate("document.querySelector('canvas').toDataURL()");
+  await new Promise((resolve) => setTimeout(resolve, 450));
+  assert.notEqual(await evaluate("document.querySelector('canvas').toDataURL()"), frame, 'Canvas did not animate');
   const controls = await evaluate(`new Promise((resolve) => {
     document.getElementById('menu-button').dispatchEvent(new MouseEvent('click', { bubbles: true }));
     setTimeout(() => {
@@ -166,6 +172,16 @@ async function main() {
   assert.deepEqual(traditional, { poem: converter(example.content), font: true });
   assert.deepEqual(externalRequests, []);
   assert.deepEqual(pageErrors, []);
-  console.log('Chrome loaded the unpacked extension. 21 offline loads; no repeated verses, external requests, or uncaught page errors.');
+  const downloads = path.join(profile, 'downloads');
+  fs.mkdirSync(downloads);
+  await send('Browser.setDownloadBehavior', { behavior: 'allow', downloadPath: downloads });
+  await evaluate("document.querySelector('.App').dispatchEvent(new KeyboardEvent('keydown', {bubbles:true,keyCode:83,altKey:true})); true");
+  const image = path.join(downloads, 'jizhi.png');
+  for (let i = 0; i < 80 && !fs.existsSync(image); i++) {
+    await new Promise((resolve) => setTimeout(resolve, 250));
+  }
+  assert.ok(fs.existsSync(image) && fs.readFileSync(image).subarray(0, 8).equals(Buffer.from('89504e470d0a1a0a', 'hex')), 'PNG was not downloaded');
+  const browser = await send('Browser.getVersion');
+  console.log(target + ' ' + browser.product + ': native new tab, 21 offline loads, fonts, animation and PNG verified.');
 }
 main().catch((error) => { console.error(error); process.exitCode = 1; }).finally(() => child.kill());

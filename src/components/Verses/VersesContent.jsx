@@ -87,7 +87,7 @@ const VersesContent = (props) => {
     originalScript,
   } = props;
 
-  const searchLink = `${engineOption}${author} ${title}`;
+  const searchLink = engineOption + encodeURIComponent(author + ' ' + title);
   const filteredContent = isVertical ? pureWords(content) : content;
 
   return (

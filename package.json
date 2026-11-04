@@ -4,17 +4,23 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "build": "rimraf builds && node scripts/webpack-build.cjs && node build.js",
+    "build": "npm run build:all",
     "start": "webpack-dev-server --mode development --open --watch --port=3000",
     "test": "jest",
     "lint": "eslint --cache --format codeframe --ext .mjs,.jsx,.js src",
     "lint:fix": "yarn lint --fix",
     "format": "prettier --list-different --write  \"**/*.{js,jsx}\"",
-    "test:random": "node --test scripts/random-selection.test.cjs"
+    "test:random": "node --test scripts/random-selection.test.cjs",
+    "build:all": "node scripts/webpack-build.cjs all",
+    "build:chrome": "node scripts/webpack-build.cjs chrome",
+    "build:edge": "node scripts/webpack-build.cjs edge",
+    "build:firefox": "node scripts/webpack-build.cjs firefox",
+    "package:all": "node build.js all",
+    "verify:builds": "node scripts/verify-builds.cjs",
+    "lint:firefox": "node scripts/lint-firefox.cjs"
   },
   "dependencies": {
     "archiver": "^3.1.1",
-    "axios": "^0.21.1",
     "chalk": "^4.1.2",
     "evergreen-ui": "^4.19.1",
     "handlebars": "^4.7.6",
@@ -33,6 +39,7 @@
     "@neutrinojs/eslint": "^9.5.0",
     "@neutrinojs/jest": "^9.5.0",
     "@neutrinojs/react": "^9.5.0",
+    "adm-zip": "0.6.1",
     "copy-webpack-plugin": "^5.0.4",
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-16": "^1.13.0",
@@ -45,6 +52,7 @@
     "neutrino": "^9.5.0",
     "prettier": "^2.2.1",
     "rimraf": "^3.0.2",
+    "web-ext": "10.8.0",
     "webpack": "^4",
     "webpack-cli": "^3",
     "webpack-dev-server": "^3"

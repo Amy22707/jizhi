@@ -1,66 +1,103 @@
-const fs = require('fs');
-const path = require('path');
-const chalk = require('chalk');
+const fs = require('node:fs');
+const path = require('node:path');
 const archiver = require('archiver');
-const log = console.log;
 
-log(process.argv.slice(2));
+const root = __dirname;
+const buildRoot = path.join(root, 'builds');
+const targets = ['chrome', 'edge', 'firefox'];
 
-const browsers = {
-  chrome: {
-    name: 'chrome_edge',
-    labelColor: 'magenta',
-  },
-  firefox: {
-    name: 'firefox',
-    labelColor: 'yellow',
-  },
-};
+function selectedTargets(argument = 'all') {
+  if (argument === 'all') return targets;
+  if (!targets.includes(argument)) throw new Error('Expected chrome, edge, firefox, or all');
+  return [argument];
+}
 
-const getArchive = (browser) => {
-  const buildFolderPath = path.resolve(__dirname, `./builds/build_${browser}`);
+function buildDirectory(browser) {
+  if (!targets.includes(browser)) throw new Error('Unknown browser: ' + browser);
+  return path.join(buildRoot, 'build_' + browser);
+}
 
-  if (!fs.existsSync(buildFolderPath)) {
-    log(chalk.yellow(`${browser} build folder NOT found...`));
-    return;
+function archiveTo(name, addEntries) {
+  return new Promise((resolve, reject) => {
+    const destination = path.join(buildRoot, name);
+    const output = fs.createWriteStream(destination);
+    const archive = archiver('zip', { zlib: { level: 9 } });
+    output.on('close', () => {
+      console.log(name + ' · ' + (archive.pointer() / 1048576).toFixed(2) + ' MiB');
+      resolve();
+    });
+    output.on('error', reject);
+    archive.on('error', reject);
+    archive.on('warning', reject);
+    archive.pipe(output);
+    addEntries(archive);
+    archive.finalize().catch(reject);
+  });
+}
+
+function packageBrowser(browser) {
+  const directory = buildDirectory(browser);
+  if (!fs.existsSync(path.join(directory, 'manifest.json'))) {
+    throw new Error('Build ' + browser + ' before packaging it');
   }
+  return archiveTo(browser + '.zip', (archive) => archive.directory(directory, false));
+}
 
-  const chalkLabel = chalk.keyword(`${browsers[browser].labelColor}`);
-  const label = chalkLabel(browser);
-
-  log(label, chalk.green(`${browser} build folder found...`));
-
-  const zipPath = path.resolve(__dirname, `./builds/${browsers[browser].name}.zip`);
-  const output = fs.createWriteStream(zipPath);
-
-  const archive = archiver('zip', {
-    zlib: { level: 9 },
-  });
-
-  output.on('close', () => {
-    const fileSizeMB = (archive.pointer() / 1048576).toFixed(2);
-    log(label, chalk.green(`Zip file size: ${fileSizeMB} MB`));
-    log(label, 'archiver has been finalized and the output file descriptor has closed.');
-  });
-
-  output.on('end', () => log(label, 'Data has been drained'));
-
-  archive.on('warning', (err) => {
-    if (err.code === 'ENOENT') {
-      log(label, 'EEEEEE');
-    } else {
-      throw err;
+function packageFirefoxSource() {
+  // This allowlist includes the checked-in assets used by webpack. It excludes
+  // developer profiles, downloaded fonts, browser binaries, and generated files.
+  const files = [
+    'README.md',
+    'CREDITS.md',
+    'PRIVACY.md',
+    'CHANGELOG.md',
+    'LICENSE',
+    '.neutrinorc.js',
+    '.eslintrc.js',
+    '.prettierrc',
+    'jest.config.js',
+    'package.json',
+    'package-lock.json',
+    'build.js',
+    'webpack.config.js',
+    'chrome.manifest.json',
+    'firefox.manifest.json',
+    'extension.background.js',
+  ];
+  return archiveTo('firefox-source.zip', (archive) => {
+    for (const file of files) {
+      const source = path.join(root, file);
+      if (file === 'LICENSE' && !fs.existsSync(source)) continue;
+      archive.file(source, { name: file });
+    }
+    for (const directory of ['src', 'scripts', 'docs']) {
+      archive.glob(
+        '**/*',
+        {
+          cwd: path.join(root, directory),
+          ignore: ['**/__pycache__/**', '**/*.pyc', '**/.env*', '**/*.pem', '**/*.key'],
+        },
+        { prefix: directory }
+      );
     }
   });
+}
 
-  archive.on('error', (err) => {
-    throw err;
-  });
+async function packageTargets(browsers) {
+  await Promise.all(browsers.map(packageBrowser));
+  if (browsers.includes('chrome')) {
+    fs.copyFileSync(path.join(buildRoot, 'chrome.zip'), path.join(buildRoot, 'chrome_edge.zip'));
+  }
+  if (browsers.includes('firefox')) await packageFirefoxSource();
+}
 
-  archive.pipe(output);
-  archive.directory(buildFolderPath, false);
-  archive.finalize();
-};
+if (require.main === module) {
+  Promise.resolve()
+    .then(() => packageTargets(selectedTargets(process.argv[2])))
+    .catch((error) => {
+      console.error(error);
+      process.exitCode = 1;
+    });
+}
 
-getArchive('chrome');
-getArchive('firefox');
+module.exports = { root, buildRoot, buildDirectory, selectedTargets, packageTargets };

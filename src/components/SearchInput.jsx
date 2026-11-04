@@ -2,6 +2,7 @@ import React from 'react';
 import { Icon } from 'evergreen-ui';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { firefoxDataPermissions, requestDataConsent } from '../utils/networkConsent';
 
 const SearchForm = styled.form`
   position: absolute;
@@ -37,8 +38,14 @@ const Input = styled.input`
 const SearchInput = (props) => {
   const { engineOption, value, focused, onFocus, onBlur, onChange, isDarkMode } = props;
   const iconColor = isDarkMode ? 'white' : null;
+  const submit = async (event) => {
+    if (!firefoxDataPermissions()) return;
+    event.preventDefault();
+    const form = event.currentTarget;
+    if (await requestDataConsent('searchTerms')) HTMLFormElement.prototype.submit.call(form);
+  };
   return (
-    <SearchForm action={engineOption.split('?')[0]}>
+    <SearchForm action={engineOption.split('?')[0]} onSubmit={submit}>
       <Icon id="jizhi-search-icon" icon="search" size={16} color={iconColor} />
       <Input
         className={focused || value ? 'active' : null}
@@ -47,6 +54,7 @@ const SearchInput = (props) => {
         onChange={onChange}
         name={engineOption.split('.')[1] === 'baidu' ? 'wd' : 'q'}
         autoComplete="off"
+        aria-label={`在 ${new URL(engineOption).hostname} 搜索`}
         isDarkMode={isDarkMode}
       />
     </SearchForm>

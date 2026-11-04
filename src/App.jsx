@@ -16,6 +16,7 @@ import {
   VERTICAL,
   WAVES,
   GOOGLE_SEARCH,
+  SEARCH_ENGINES,
   DEFAULT_SHICI,
   DEFAULT_FONT,
 } from './constants/appConstants';
@@ -88,7 +89,8 @@ class App extends Component {
           isPlaying: res.defaultPlayChecked !== false,
           verses,
           selected: res.selected || WAVES,
-          engineOption: res.engineOption || GOOGLE_SEARCH,
+          engineOption:
+            SEARCH_ENGINES.find(({ value }) => value === res.engineOption)?.value || GOOGLE_SEARCH,
           fontName,
           isDarkMode,
           waveColor: waveColor || defaultColor,
@@ -320,7 +322,12 @@ class App extends Component {
           onPersonalizationChange={this.changePersonalization}
           waveColor={waveColor}
         />
-        {personalization.showShortcuts === true && <Shortcuts isDarkMode={isDarkMode} />}
+        {personalization.showShortcuts === true && (
+          <Shortcuts
+            isDarkMode={isDarkMode}
+            onlineIconsRequested={personalization.onlineShortcutIcons === true}
+          />
+        )}
         {showSearchBarChecked && (
           <SearchInput
             value={value}

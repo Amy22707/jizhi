@@ -44,6 +44,7 @@ const Legal = ({ waveColor, selected }) => {
       <Paragraph size={400} marginTop="default">
         <CustomLink url={JIZHI_LINKS.home.link} name={JIZHI_LINKS.home.name} />
         <CustomLink url={JIZHI_LINKS.issues.link} name={JIZHI_LINKS.issues.name} />
+        <CustomLink url={JIZHI_LINKS.privacy.link} name={JIZHI_LINKS.privacy.name} />
       </Paragraph>
       <Paragraph size={400} marginTop="default">
         几枝·增强版基于 Unicar 和贡献者开发的几枝。诗词与传统色均可离线使用。

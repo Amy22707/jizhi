@@ -4,6 +4,7 @@ import { Button, Dialog, Pane, Text, TextInputField } from 'evergreen-ui';
 import styled from 'styled-components';
 import icons from '../constants/shortcut-icons.json';
 import Storager from '../utils/storager';
+import { firefoxDataPermissions } from '../utils/networkConsent';
 
 const MAX_SHORTCUTS = 8;
 const STORAGE_KEY = 'shortcuts';
@@ -104,13 +105,13 @@ const Edit = styled.button`
   }
 `;
 
-function ShortcutIcon({ name, url, isDarkMode }) {
+function ShortcutIcon({ name, url, isDarkMode, onlineIcons }) {
   const [attempt, setAttempt] = useState(0);
   const hostname = new URL(url).hostname.replace(/^www\./, '');
   const candidates = [
     siteIcons.get(hostname),
-    new URL('/favicon.ico', url).href,
-    new URL('/favicon.svg', url).href,
+    onlineIcons && new URL('/favicon.ico', url).href,
+    onlineIcons && new URL('/favicon.svg', url).href,
   ].filter(Boolean);
   const source = candidates[attempt];
   return (
@@ -132,6 +133,7 @@ function ShortcutIcon({ name, url, isDarkMode }) {
 ShortcutIcon.propTypes = {
   name: PropTypes.string.isRequired,
   url: PropTypes.string.isRequired,
+  onlineIcons: PropTypes.bool.isRequired,
   isDarkMode: PropTypes.bool.isRequired,
 };
 
@@ -175,7 +177,7 @@ function readShortcuts() {
   return shortcuts;
 }
 
-const Shortcuts = ({ isDarkMode }) => {
+const Shortcuts = ({ isDarkMode, onlineIconsRequested }) => {
   const [shortcuts, setShortcuts] = useState(readShortcuts);
   const [draft, setDraft] = useState(null);
   const [error, setError] = useState('');
@@ -187,6 +189,38 @@ const Shortcuts = ({ isDarkMode }) => {
     window.addEventListener('storage', sync);
     return () => window.removeEventListener('storage', sync);
   }, []);
+
+  const [onlineConsent, setOnlineConsent] = useState(false);
+  useEffect(() => {
+    if (!onlineIconsRequested) return;
+    const permissions = firefoxDataPermissions();
+    if (!permissions) {
+      setOnlineConsent(true);
+      return;
+    }
+    let active = true;
+    let request = 0;
+    const sync = async () => {
+      const current = ++request;
+      let allowed = false;
+      try {
+        allowed = await permissions.contains({ data_collection: ['browsingActivity'] });
+      } catch {
+        // Keep remote icons disabled when consent cannot be checked.
+      }
+      if (active && current === request) setOnlineConsent(allowed);
+    };
+    setOnlineConsent(false);
+    permissions.onAdded.addListener(sync);
+    permissions.onRemoved.addListener(sync);
+    sync();
+    return () => {
+      active = false;
+      permissions.onAdded.removeListener(sync);
+      permissions.onRemoved.removeListener(sync);
+    };
+  }, [onlineIconsRequested]);
+  const onlineIcons = onlineIconsRequested && onlineConsent;
 
   const open = (shortcut) => {
     setError('');
@@ -236,7 +270,13 @@ const Shortcuts = ({ isDarkMode }) => {
         {shortcuts.map(({ url, name }) => (
           <Tile key={url}>
             <TileFace href={url} title={name} aria-label={name}>
-              <ShortcutIcon name={name} url={url} isDarkMode={isDarkMode} />
+              <ShortcutIcon
+                key={String(onlineIcons)}
+                name={name}
+                url={url}
+                isDarkMode={isDarkMode}
+                onlineIcons={onlineIcons}
+              />
             </TileFace>
             <Edit
               type="button"
@@ -319,6 +359,7 @@ const Shortcuts = ({ isDarkMode }) => {
 };
 
 Shortcuts.propTypes = {
+  onlineIconsRequested: PropTypes.bool.isRequired,
   isDarkMode: PropTypes.bool.isRequired,
 };
 

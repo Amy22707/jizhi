@@ -1,31 +1,17 @@
-// Whilst the configuration object can be modified here, the recommended way of making
-// changes is via the presets' options or Neutrino's API in `.neutrinorc.js` instead.
-// Neutrino's inspect feature can be used to view/export the generated configuration.
-const path = require('path');
+const path = require('node:path');
+const { createRequire } = require('node:module');
 const neutrino = require('neutrino');
-const CopyPlugin = require('copy-webpack-plugin');
 
-const basicConfig = neutrino().webpack();
-
-const generateConfig = (config, browser) => {
-  const { output, plugins } = config;
-  return {
-    ...config,
-    output: {
-      ...output,
-      path: path.resolve(__dirname, `./builds/build_${browser}`),
-    },
-    plugins: [
-      ...plugins,
-      new CopyPlugin([
-        { from: `./${browser}.manifest.json`, to: './manifest.json' },
-        { from: `./${browser}.background.js`, to: './background.js' },
-      ]),
-    ],
+const config = neutrino().webpack();
+if (process.env.NODE_ENV === 'production') {
+  const wrapperRequire = createRequire(require.resolve('react-p5-wrapper/package.json'));
+  config.resolve.alias = {
+    ...config.resolve.alias,
+    p5$: wrapperRequire.resolve('p5/lib/p5.js'),
   };
-};
-
-const chromeConfig = generateConfig(basicConfig, 'chrome');
-const ffConfig = generateConfig(basicConfig, 'firefox');
-
-module.exports = [chromeConfig, ffConfig];
+  config.module.rules.push({
+    test: /[\\/](?:p5[\\/]lib[\\/]p5|lodash[\\/]_root|lodash\.[^\\/]+[\\/]index|webpack[\\/]buildin[\\/]global|regenerator-runtime[\\/]runtime(?:-module)?)\.js$/,
+    use: path.resolve(__dirname, 'scripts/csp-fallbacks-loader.cjs'),
+  });
+}
+module.exports = config;

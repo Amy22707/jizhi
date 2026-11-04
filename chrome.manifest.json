@@ -1,7 +1,7 @@
 {
   "name": "几枝·增强版",
   "version": "2.5.2",
-  "description": "支持自定义新标签页的 Chrome 扩展，几枝将在新标签页上展示中国传统色的层叠波浪动画效果搭配经典诗词。基于原版几枝的非官方增强版。",
+  "description": "以中国传统色、动态水墨山峦和古诗词替换浏览器新标签页。基于几枝的非官方增强版。",
   "permissions": [],
   "background": {
     "service_worker": "background.js"
@@ -10,7 +10,7 @@
     "default_icon": {
       "16": "./static/icons/jizhi-16.png",
       "32": "./static/icons/jizhi-32.png",
-      "48": "./static/icons/jizhi-64.png",
+      "64": "./static/icons/jizhi-64.png",
       "128": "./static/icons/jizhi-128.png"
     }
   },
@@ -20,11 +20,12 @@
   "icons": {
     "16": "./static/icons/jizhi-16.png",
     "32": "./static/icons/jizhi-32.png",
-    "48": "./static/icons/jizhi-64.png",
+    "64": "./static/icons/jizhi-64.png",
     "128": "./static/icons/jizhi-128.png"
   },
   "manifest_version": 3,
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'"
-  }
+  },
+  "homepage_url": "https://github.com/Amy22707/jizhi"
 }
