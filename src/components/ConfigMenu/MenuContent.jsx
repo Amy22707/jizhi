@@ -97,6 +97,8 @@ const MenuContent = (props) => {
     {
       title: '简体优先',
       options: [
+        { label: '江西拙楷体', value: 'JXZhuoKai' },
+        { label: '字体圈欣意吉祥宋', value: 'JiXiangSong' },
         { label: '霞鹜臻楷', value: 'zhenkai' },
         { label: '马善政毛笔楷书', value: 'mashan' },
         { label: '站酷小薇宋体', value: 'xiaowei' },

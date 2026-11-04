@@ -75,7 +75,8 @@ class App extends Component {
           isDarkMode,
           verses,
           personalization.color,
-          personalization.custom
+          personalization.custom,
+          personalization.customColorName
         );
         this.setState({
           showSearchBarChecked: !!res.showSearchBarChecked,
@@ -103,7 +104,8 @@ class App extends Component {
       isDarkMode,
       verses,
       personalization.color,
-      personalization.custom
+      personalization.custom,
+      personalization.customColorName
     );
     if (request === this.colorRequest) this.setState({ waveColor: waveColor || defaultColor });
   };
@@ -129,7 +131,7 @@ class App extends Component {
           (key === 'script' && fontName === 'nyushu' && !personalization.verse)
         ) {
           this.refreshVerse();
-        } else if (key === 'color' || key === 'custom') {
+        } else if (key === 'color' || key === 'custom' || key === 'customColorName') {
           this.refreshColor();
         }
       }

@@ -16,12 +16,12 @@ export const fonts = {
   zhuque: 'JizhiBookSerif, JizhiLiterary, serif',
   kesong: 'JizhiWoodcut, JizhiLiterary, serif',
   zhenkai: 'JizhiRegularScript, JizhiLiterary, serif',
+  JXZhuoKai: 'JizhiZhuokai, JizhiLiterary, serif',
+  JiXiangSong: 'JizhiJixiangSong, JizhiSong, JizhiLiterary, serif',
   wenkai: '"JizhiLiterary", KaiTi, serif',
 };
 
 const legacyFonts = {
-  JXZhuoKai: 'wenkai',
-  JiXiangSong: 'xiaowei',
   sourcehan: 'kesong',
   sourcehantc: 'notoseriftc',
   kai: 'zhenkai',
@@ -50,11 +50,11 @@ export const nextVerse = (fontName, script) =>
     (verse) => (verse.tier === 'featured' ? 5 : 1)
   );
 
-export const nextColor = (dark, verse, fixed, custom) => {
+export const nextColor = (dark, verse, fixed, custom, customName) => {
   const chosen = colorOptions.find((color) => color.hex === fixed);
   if (fixed === 'custom') {
     return Promise.resolve({
-      name: '自定义色',
+      name: (typeof customName === 'string' && customName.trim()) || '自定义色',
       hex: typeof custom === 'string' && hexPattern.test(custom) ? custom : '#547689',
     });
   }

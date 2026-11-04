@@ -106,15 +106,26 @@ export default function Personalization({ settings, onChange }) {
             </Button>
           )}
           {mode === 'custom' && (
-            <Pane display="flex" alignItems="center" marginTop={8}>
-              <input
-                aria-label="自定义波浪底色"
-                type="color"
-                value={settings.custom || '#547689'}
-                onChange={(event) => onChange('custom', event.target.value)}
+            <>
+              <Pane display="flex" alignItems="center" marginTop={8}>
+                <input
+                  aria-label="自定义波浪底色"
+                  type="color"
+                  value={settings.custom || '#547689'}
+                  onChange={(event) => onChange('custom', event.target.value)}
+                />
+                <Text marginLeft={8}>{(settings.custom || '#547689').toUpperCase()}</Text>
+              </Pane>
+              <TextInput
+                marginTop={8}
+                width="100%"
+                aria-label="自定义色名称"
+                placeholder="给这个颜色起个名字"
+                maxLength={16}
+                value={settings.customColorName || ''}
+                onChange={(event) => onChange('customColorName', event.target.value)}
               />
-              <Text marginLeft={8}>{(settings.custom || '#547689').toUpperCase()}</Text>
-            </Pane>
+            </>
           )}
         </Pane>
         {mode === 'palette' && colorListOpen && (

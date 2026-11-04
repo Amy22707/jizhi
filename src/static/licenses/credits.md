@@ -18,3 +18,6 @@
 - 霞鹜臻楷采用 [LXGW ZhenKai Slab GB v0.827](https://github.com/lxgw/LxgwZhenKai/releases/tag/v0.827)，OFL 1.1，子集名 JizhiRegularScript。
 
 - 常用网址图标用于识别对应网站，标识归各自权利人。各图标的来源见 [shortcut-icons.json](src/constants/shortcut-icons.json)。部分图标采用 [Simple Icons](https://github.com/simple-icons/simple-icons) 的 CC0 图形。
+
+- 江西拙楷体由黄煜臣设计。内置字库来自原版几枝使用的 WOFF 文件，字库保持原样。[作者发布说明](https://mp.weixin.qq.com/s/H_jrZJIHwNCSyUncVpyXUQ)
+- 字体圈欣意吉祥宋由邹乐伟设计。内置字库来自原版几枝的网页字体地址，保留其中的版权信息和字库内容。[作者发布说明](https://mp.weixin.qq.com/s/WCwaKtfAiPD8uwSBGU4dNg)

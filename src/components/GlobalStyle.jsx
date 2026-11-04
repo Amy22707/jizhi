@@ -3,6 +3,18 @@ import notoSerifTC from '../constants/noto-serif-tc-css.json';
 
 const GlobalStyle = createGlobalStyle`
   @font-face {
+    font-family: JizhiZhuokai;
+    src: url('./static/fonts/JXZhuoKai.woff') format('woff');
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: JizhiJixiangSong;
+    src: url('./static/fonts/JiXiangSong.woff') format('woff');
+    font-display: swap;
+  }
+
+  @font-face {
     font-family: 'JizhiLiterary';
     src: url('./static/fonts/JizhiLiterary.woff2') format('woff2');
     font-display: swap;
