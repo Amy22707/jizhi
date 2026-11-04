@@ -2,19 +2,23 @@
 
 支持自定义新标签页的 Chrome/Firefox/Edge 扩展，几枝将在新标签页上展示中国传统色的层叠波浪动画效果搭配经典诗词。
 
-A Chrome/Firefox extension with custom new tab page featuring Chinese poems and P5.js enabled noise waves in traditional Chinese colors.
+A Chrome/Firefox/Edge new-tab extension featuring Chinese poetry and animated waves in traditional Chinese colors.
 
 几枝·增强版是基于 Unicar 和贡献者开发的[原版几枝](https://github.com/liminalpurr/jizhi)制作的非官方版本。增强版加入了离线诗词和传统色、随机去重、固定诗句、女书凤栖，以及独立的诗词和色名设置。
 
 ## 下载与安装
 
-几枝·增强版支持桌面版 Chrome、Microsoft Edge 和 Firefox。发布包分别是 `chrome.zip`、`edge.zip` 和 `firefox.zip`。Chrome 和 Edge 版的运行文件相同。安装包发布后可从 [GitHub Releases](https://github.com/Amy22707/jizhi/releases) 下载，也可以按下文自行构建。
+当前预览版：[v2.5.2](https://github.com/Amy22707/jizhi/releases/tag/v2.5.2)。支持桌面版 Chrome、Microsoft Edge 和 Firefox 142+。Chrome 和 Edge 分别提供安装包，运行文件相同。
 
-| 浏览器 | 本地加载方式 |
-| --- | --- |
-| Chrome | 解压 `chrome.zip`。打开 `chrome://extensions/`，开启「开发者模式」，点击「加载已解压的扩展程序」，选择含 `manifest.json` 的目录。 |
-| Edge | 解压 `chrome_edge.zip`。打开 `edge://extensions/`，开启「开发人员模式」，点击「加载解压缩的扩展」，选择含 `manifest.json` 的目录。若提示扩展修改新标签页，选择「保留更改」。 |
-| Firefox 142+ | 打开 `about:debugging#/runtime/this-firefox`，点击「临时载入附加组件」，选择 `firefox.zip`，或选择解压目录中的 `manifest.json`。这是临时加载，重启后需再次加载。长期安装需要 Mozilla 签名。 |
+| 浏览器 | 下载 | 本地加载方式 |
+| --- | --- | --- |
+| Chrome | [chrome.zip](https://github.com/Amy22707/jizhi/releases/download/v2.5.2/chrome.zip) | 解压后打开 `chrome://extensions/`，开启「开发者模式」，点击「加载已解压的扩展程序」，选择含 `manifest.json` 的目录。 |
+| Edge | [edge.zip](https://github.com/Amy22707/jizhi/releases/download/v2.5.2/edge.zip) | 解压后打开 `edge://extensions/`，开启「开发人员模式」，点击「加载解压缩的扩展」，选择含 `manifest.json` 的目录。若提示扩展修改新标签页，选择「保留更改」。 |
+| Firefox 142+ | [firefox.zip](https://github.com/Amy22707/jizhi/releases/download/v2.5.2/firefox.zip) | 打开 `about:debugging#/runtime/this-firefox`，点击「临时载入附加组件」，选择 ZIP，或选择解压目录中的 `manifest.json`。 |
+
+**Firefox 当前提供的是未签名预览包**，临时加载在浏览器重启后需要重新操作。签名后的 XPI 和扩展商店入口将在后续提供。
+
+[firefox-source.zip](https://github.com/Amy22707/jizhi/releases/download/v2.5.2/firefox-source.zip) 是 Mozilla 审核源码包，不用于安装。GitHub 自动生成的 “Source code” 压缩包也不是浏览器安装包。
 
 Chrome 和 Edge 更新本地构建后，可以在扩展卡片上点击「重新加载」。Firefox 也可在调试页面点击「重新载入」。
 
