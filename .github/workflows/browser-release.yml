@@ -52,4 +52,4 @@ jobs:
           RELEASE_TAG: ${{ github.event.release.tag_name }}
         run: |
           gh release upload --repo "$GITHUB_REPOSITORY" -- "$RELEASE_TAG" \
-            packages/chrome.zip packages/edge.zip packages/firefox.zip packages/firefox-source.zip
+            packages/chrome.zip packages/edge.zip packages/firefox.zip

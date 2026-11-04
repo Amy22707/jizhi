@@ -8,6 +8,8 @@ A Chrome/Firefox/Edge new-tab extension featuring Chinese poetry and animated wa
 
 ## 下载与安装
 
+[前往 GitHub Releases 查看所有版本](https://github.com/Amy22707/jizhi/releases)
+
 当前预览版：[v2.5.2](https://github.com/Amy22707/jizhi/releases/tag/v2.5.2)。支持桌面版 Chrome、Microsoft Edge 和 Firefox 142+。Chrome 和 Edge 分别提供安装包，运行文件相同。
 
 | 浏览器 | 下载 | 本地加载方式 |
@@ -18,26 +20,20 @@ A Chrome/Firefox/Edge new-tab extension featuring Chinese poetry and animated wa
 
 **Firefox 当前提供的是未签名预览包**，临时加载在浏览器重启后需要重新操作。签名后的 XPI 和扩展商店入口将在后续提供。
 
-[firefox-source.zip](https://github.com/Amy22707/jizhi/releases/download/v2.5.2/firefox-source.zip) 是 Mozilla 审核源码包，不用于安装。GitHub 自动生成的 “Source code” 压缩包也不是浏览器安装包。
-
 Chrome 和 Edge 更新本地构建后，可以在扩展卡片上点击「重新加载」。Firefox 也可在调试页面点击「重新载入」。
 
-### 从源码打包
+### 从源码构建
 
-在项目目录执行以下命令。
+使用 Node.js 24 和 npm 11，在项目目录运行：
 
 ```sh
 npm ci --legacy-peer-deps --ignore-scripts
 npm run build:all
-npm run verify:builds
-npm run lint:firefox
 ```
 
-需要 Node.js 24 和 npm 11。单独构建可用 `npm run build:chrome`、`npm run build:edge` 或 `npm run build:firefox`。输出位于 `builds/`，包含各浏览器的 ZIP 和对应的解压目录。Firefox 构建同时生成 AMO 审核用的 `firefox-source.zip`。 `npm run package:all` 可重新打包已构建的目录。
+安装包和解压目录位于 `builds/`。
 
-在 GitHub Actions 可以手动试跑。发布 GitHub Release 后，工作流会自动附上三个安装包和 Firefox 源码包。
-
-[兼容性说明](./docs/BROWSER_COMPATIBILITY.md) · [商店上架指南](./docs/STORE_PUBLISHING.md) · [发布检查清单](./docs/RELEASE_CHECKLIST.md) · [Firefox 审核源码](./docs/FIREFOX_SOURCE_BUILD.md) · [隐私说明](./PRIVACY.md)
+[隐私说明](./PRIVACY.md)
 
 ## 功能
 
@@ -86,15 +82,22 @@ npm run lint:firefox
 
 ## 中文字体
 
-齿轮 →「字体」按「简体优先」「繁體優先」「简繁皆可」「女书」分组，可独立选择诗词字形：保留原文、简体或繁體（台湾字形）。字形设置适用于正文、篇名和作者；它不会改动诗词数据或已固定的条目。繁体组内置 Noto Serif TC 繁體宋體，无需另行安装。扩展内置 [霞鹜文楷](https://github.com/lxgw/LxgwWenKai)、[马善政毛笔楷书](https://github.com/googlefonts/mashanzheng)和[站酷小薇宋体](https://github.com/googlefonts/zcool-xiaowei)，均可离线使用。
+几枝·增强版内置 **10 款字体**，安装扩展后即可离线使用。在齿轮菜单的「字体」页可按以下分组选择。
 
-选择「女书凤栖 · Nyushu」会对诗句正文逐字使用凤栖字形。凤栖字库随扩展内置，选择后即可离线使用。随机模式从当前简繁设置下每个汉字都有女书字形的诗句中抽取。内置子集保留诗库用到的 1,512 个汉字对应的女书字形。固定诗句中缺少对应字形的字会以汉字显示。扩展修正了凤栖的竖排字距，横排和竖排均可使用。覆盖检查只保存符合条件的诗句 ID，可用 `node scripts/fengqi-coverage.cjs <凤栖字库路径>` 重建。
+| 分组 | 内置字体 |
+| --- | --- |
+| 简体优先 | 江西拙楷体、字体圈欣意吉祥宋、霞鹜臻楷、马善政毛笔楷书、站酷小薇宋体 |
+| 繁體優先 | Noto Serif TC 繁體宋體 |
+| 简繁皆可 | 香萃刻宋、朱雀仿宋、霞鹜文楷 |
+| 女书 | 女书凤栖 · Nyushu |
+
+「诗词字形」可以独立于字体选择，提供「保留原文」「简体」和「繁體（台湾字形）」。此设置应用于诗句、篇名和作者的显示。所选字体缺少个别字形时，浏览器会使用后备字体。
+
+选择「女书凤栖 · Nyushu」会对诗句正文逐字使用凤栖字形。凤栖字库随扩展内置，选择后即可离线使用。随机模式从当前简繁设置下每个汉字都有女书字形的诗句中抽取。内置子集保留诗库用到的 1,512 个汉字对应的女书字形。固定诗句中缺少对应字形的字会以汉字显示。扩展修正了凤栖的竖排字距，横排和竖排均可使用。
 
 诗句、作者和篇名会一起应用所选字体。「颜色名字体」位于诗词字体列表下方，默认开启「与诗词字体相同」。关闭开关后，可以直接从分组列表为右上角的色名单独选字体。诗句或色名使用女书时，可以分别打开对应的原文开关。开启诗词原文时会同时显示诗句、作者和篇名。横排时，汉字原文显示在女书下方。竖排诗句和色名的原文显示在相邻一列。两处原文共用「原文字形」和「原文字体」。原文字形默认使用繁体，可切换为简体。
 
 想要古籍刻本的质感，可以试内置的香萃刻宋。朱雀仿宋有活字印刷的书卷气，霞鹜臻楷则适合喜欢端正楷书笔意的读者。三款均可离线使用。
-
-菜单中的字体随扩展内置。江西拙楷体和字体圈欣意吉祥宋可在「简体优先」中选择。缺少个别字形时会使用后备字体。
 
 ## 鸣谢
 
