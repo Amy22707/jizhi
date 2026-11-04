@@ -10,3 +10,28 @@ firefox_src_review
 firefox_src_review.sh
 firefox_src_review_README.md
 .data-work/
+
+# Local settings, caches, and debug output
+.env
+.env.*
+!.env.example
+!.env.sample
+.vscode/
+.idea/
+__pycache__/
+*.py[cod]
+*.log
+Thumbs.db
+Desktop.ini
+
+# Browser packages and signing material
+*.crx
+*.xpi
+*.pem
+*.key
+*.p12
+*.pfx
+*.mobileprovision
+
+# Unused legacy font. Bundled fonts are tracked under src/static/fonts.
+/src/fonts/JXZhuoKai.woff

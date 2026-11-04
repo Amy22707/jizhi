@@ -1,16 +1,20 @@
-# 几枝·增强版 | Jizhi Enhanced（非官方）
+# 几枝·增强版 | Jizhi Enhanced
 
-[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors)
+支持自定义新标签页的 Chrome/Firefox/Edge 扩展，几枝将在新标签页上展示中国传统色的层叠波浪动画效果搭配经典诗词。
 
-几枝·增强版是一款古诗词新标签页扩展。每次打开新标签页，都可以欣赏一联诗词与传统色波浪，也能固定喜欢的诗句、选用女书凤栖或自定义配色。
+几枝·增强版是基于 Unicar 和贡献者开发的原版几枝制作的非官方版本，由 Amy22707 维护。增强版加入了离线诗词和传统色、随机去重、固定诗句、女书凤栖，以及独立的诗词和色名设置。
 
 ## 下载与安装
 
-**增强版下载入口**见 [GitHub Releases](https://github.com/Amy22707/jizhi/releases)。如发布页已提供 `chrome.zip`，下载并解压即可。手上已有源码时，也可以按下面的步骤生成安装包。
+几枝·增强版支持桌面版 Chrome、Microsoft Edge 和 Firefox。Chrome 与 Edge 共用 `chrome_edge.zip`，Firefox 使用 `firefox.zip`。安装包发布后可从 [GitHub Releases](https://github.com/Amy22707/jizhi/releases) 下载，也可以按下文自行构建。
 
-1. 打开 Chrome 的扩展程序页面 `chrome://extensions/`，开启「开发者模式」。
-2. 点击「加载已解压的扩展程序」，选择含 `manifest.json` 的解压目录。从源码打包时，选择 `builds/build_chrome`。
-3. 打开一个新标签页即可体验。更新时，在扩展卡片上点击「重新加载」。
+| 浏览器 | 本地加载方式 |
+| --- | --- |
+| Chrome | 解压 `chrome_edge.zip`。打开 `chrome://extensions/`，开启「开发者模式」，点击「加载已解压的扩展程序」，选择含 `manifest.json` 的目录。 |
+| Edge | 解压同一个 `chrome_edge.zip`。打开 `edge://extensions/`，开启「开发人员模式」，点击「加载解压缩的扩展」，选择含 `manifest.json` 的目录。若提示扩展修改新标签页，选择「保留更改」。 |
+| Firefox | 打开 `about:debugging#/runtime/this-firefox`，点击「临时载入附加组件」，选择 `firefox.zip`，或选择解压目录中的 `manifest.json`。这是临时加载，重启后需再次加载。长期安装需要 Mozilla 签名。 |
+
+Chrome 和 Edge 更新本地构建后，可以在扩展卡片上点击「重新加载」。Firefox 也可在调试页面点击「重新载入」。
 
 ### 从源码打包
 
@@ -21,14 +25,16 @@ npm install --legacy-peer-deps
 npm run build
 ```
 
-构建后，`builds/build_chrome` 是可直接加载的目录，`builds/chrome.zip` 是可解压安装的压缩包。
+构建生成 `builds/chrome_edge.zip` 和 `builds/firefox.zip`。也可直接加载对应的 `builds/build_chrome` 或 `builds/build_firefox`。
 
 ## 功能
 
 - 打开新标签页，欣赏中国传统色的层叠波浪或 Blobs 动画。保留浅色、深色和跟随系统、动静切换、横排与竖排、色名淡出、可选搜索框和背景截图。空格暂停或播放，波浪背景下左右键换色，Alt+S 保存背景。
 - 8,500 条离线诗句，精选篇目更常出现。在随机模式下，诗句避开最近 200 条，波浪色避开最近 10 个。候选不足时会缩短去重范围。历史保存在这台浏览器；固定选择会一直显示。
-- 658 种传统色。春景、山水、秋景、月夜和雪景会提高相应色系的概率，每种合适的底色仍有机会出现。
-- 齿轮 →「个性化」可调整字号，选定传统色或自定义波浪底色，也可直接从推荐的唐诗宋词里固定一条，或用简体、繁体搜索诗句、作者和篇名。选回颜色里的「随机」或诗句里的「随机诗句」即可恢复轮换。
+- 658 种传统色。**春景、山水、秋景、月夜和雪景会提高相应色系的概率，每种合适的底色仍有机会出现。**
+- 齿轮 →「个性化」可选定传统色或自定义波浪底色，也可直接从推荐的唐诗宋词里固定一条，或用简体、繁体搜索诗句、作者和篇名。选回颜色里的「随机」或诗句里的「随机诗句」即可恢复轮换。
+
+- 常用网址默认关闭。在齿轮菜单的「设置」中打开「显示常用网址」后，可在新标签页左侧固定最多 8 个网址。竖栏内置一批常用网站图标，可离线显示。其他网站会尝试读取本站图标，加载不到时显示站名首字。点击「添加网址」输入地址，悬停在卡片上或用键盘聚焦后，点击「···」编辑或移除。网址保存在当前浏览器。关闭后重新打开，会恢复已固定的网址。
 
 更多原版功能见 [更新日志](./CHANGELOG.md)。
 
@@ -50,23 +56,19 @@ npm run build
 
 ![泡泡背景与孟浩然《春晓》](./examples/enhanced-blobs.png)
 
-### 用女书读《关山月》
+### 使用女书凤栖
 
-> 明月出天山，苍茫云海间。
->
-> 李白《关山月》
+![女书凤栖竖排，王维《终南别业》](./examples/enhanced-nushu-vertical.png)
 
-这一联的十个汉字都有女书凤栖字形。在「个性化」搜索并固定这句诗，再到「字体」选择「简体」和「女书凤栖 · Nyushu」，即可看到下图效果。
-
-![女书凤栖逐字呈现李白《关山月》，原文为「明月出天山，苍茫云海间」](./examples/enhanced-nushu.png)
+![女书凤栖横排，附汉字原文，王维《终南别业》](./examples/enhanced-nushu.png)
 
 ### 个性化与字体
 
-点左下角的齿轮，进入「个性化」。可从推荐的唐诗宋词中固定一条，也可搜索完整诗库，调整字号和波浪底色。
+点左下角的齿轮，进入「个性化」。可从推荐的唐诗宋词中固定一条，也可搜索完整诗库，调整波浪底色。
 
-![个性化面板，包含诗句搜索、推荐名句和字号](./examples/enhanced-personalization.png)
+![个性化面板，包含诗句搜索和推荐名句](./examples/enhanced-personalization.png)
 
-在「字体」中选择字体，再按喜好切换诗词字形。
+在「字体」中选择字体、切换诗词字形，也可分别调整诗句和颜色名的字号。
 
 ![字体面板，包含简繁切换与字体分组](./examples/enhanced-fonts.png)
 
@@ -99,9 +101,9 @@ npm run build
   - [中国传统色彩](https://color.uisdc.com/)
   - [最全！超美中国传统色 含 RGB、CMYK 色值！值得收藏！](https://www.weibo.com/ttarticle/p/show?id=2309404248238352952773)
 
-## Contributors ✨
+## 原版贡献者
 
-Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+以下名单沿用原版几枝的贡献者记录。
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore -->

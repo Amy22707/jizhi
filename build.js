@@ -8,7 +8,7 @@ log(process.argv.slice(2));
 
 const browsers = {
   chrome: {
-    name: 'chrome',
+    name: 'chrome_edge',
     labelColor: 'magenta',
   },
   firefox: {
@@ -30,7 +30,7 @@ const getArchive = (browser) => {
 
   log(label, chalk.green(`${browser} build folder found...`));
 
-  const zipPath = path.resolve(__dirname, `./builds/${browser}.zip`);
+  const zipPath = path.resolve(__dirname, `./builds/${browsers[browser].name}.zip`);
   const output = fs.createWriteStream(zipPath);
 
   const archive = archiver('zip', {

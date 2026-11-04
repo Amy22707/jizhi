@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   Pane,
+  Text,
   Button,
   Menu,
   Tablist,
@@ -11,10 +12,17 @@ import {
   InlineAlert,
 } from 'evergreen-ui';
 import styled from 'styled-components';
-import { DEFAULT_FONT, WAVES } from '../../constants/appConstants';
+import { DEFAULT_COLOR_NAME_SIZE, DEFAULT_FONT, WAVES } from '../../constants/appConstants';
 import Legal from './Legal';
 import Personalization from './Personalization';
 import SaveBgMenuItem from './SaveBgMenuItem';
+
+const SizeSlider = styled.input`
+  width: 100%;
+  height: 4px;
+  accent-color: #1070ca;
+  margin: 10px 0 4px;
+`;
 
 const SwitchWrapper = styled.div`
   display: flex;
@@ -169,6 +177,11 @@ const MenuContent = (props) => {
       onChangeFunc: onDefaultPlayChange,
     },
     {
+      name: '显示常用网址',
+      checkedState: personalization.showShortcuts === true,
+      onChangeFunc: (event) => onPersonalizationChange('showShortcuts', event.target.checked),
+    },
+    {
       name: '显示搜索框',
       checkedState: showSearchBarChecked,
       onChangeFunc: onShowSearchBarChange,
@@ -262,6 +275,42 @@ const MenuContent = (props) => {
       tabName: '字体',
       tabContent: (
         <>
+          <Menu.Group title="诗句字号">
+            <Pane marginX={16}>
+              <Text size={300} is="label" htmlFor="verse-size">
+                {personalization.size || 30}
+              </Text>
+              <SizeSlider
+                id="verse-size"
+                aria-label="诗句字号"
+                type="range"
+                min={18}
+                max={48}
+                value={personalization.size || 30}
+                onChange={(event) => onPersonalizationChange('size', Number(event.target.value))}
+              />
+            </Pane>
+          </Menu.Group>
+          <Menu.Divider />
+          <Menu.Group title="颜色名字号">
+            <Pane marginX={16}>
+              <Text size={300} is="label" htmlFor="color-name-size">
+                {personalization.colorNameSize || DEFAULT_COLOR_NAME_SIZE}
+              </Text>
+              <SizeSlider
+                id="color-name-size"
+                aria-label="颜色名字号"
+                type="range"
+                min={40}
+                max={160}
+                value={personalization.colorNameSize || DEFAULT_COLOR_NAME_SIZE}
+                onChange={(event) =>
+                  onPersonalizationChange('colorNameSize', Number(event.target.value))
+                }
+              />
+            </Pane>
+          </Menu.Group>
+          <Menu.Divider />
           <Menu.Group title="诗词字形">
             <Pane marginX={16}>
               <SegmentedControl

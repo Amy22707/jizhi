@@ -16,3 +16,5 @@
 - 香萃刻宋来自 [Miiiller/Xiangcui-Kesong c49b294](https://github.com/Miiiller/Xiangcui-Kesong/tree/c49b2946c48a7b27b087800d2190cd7fc43363b8)，OFL 1.1，子集名 JizhiWoodcut。
 - 朱雀仿宋来自 [TrionesType/zhuque v0.212](https://github.com/TrionesType/zhuque/releases/tag/v0.212)，OFL 1.1，子集名 JizhiBookSerif。
 - 霞鹜臻楷采用 [LXGW ZhenKai Slab GB v0.827](https://github.com/lxgw/LxgwZhenKai/releases/tag/v0.827)，OFL 1.1，子集名 JizhiRegularScript。
+
+- 常用网址图标用于识别对应网站，标识归各自权利人。各图标的来源见 [shortcut-icons.json](src/constants/shortcut-icons.json)。部分图标采用 [Simple Icons](https://github.com/simple-icons/simple-icons) 的 CC0 图形。

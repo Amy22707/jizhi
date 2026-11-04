@@ -4,7 +4,7 @@
 - `npm run test:random`：4 组通过。固定随机种子抽取 1,000 次，窗口 200 内无重复，覆盖 915 条不同诗句，精选抽到 470 次。另测了 500 次昼夜色池交替、损坏历史、小样本和本地存储写入失败。
 - `npm run build`：Node 24、Webpack 4.47，生成 Chrome MV3 与 Firefox 目录和 ZIP。Webpack 有体积提示。诗词 JSON 约 1.95 MB，色表约 92 KB，字体约 7.9 MB，Chrome ZIP 约 8.9 MiB。浏览器只加载当前字体所需的字库或分片。
 - `node scripts/chrome-smoke.cjs`：Chrome 156，独立临时配置，通过 CDP 加载未打包扩展。模拟断网加载 21 次，每次有诗句和画布，诗句不重复，无 HTTP(S) 请求或未捕获异常。检查了个性化表单，验证了持久化固定诗句、字号和女书字体的恢复与离线加载。
-- 生产构建输出：`builds/build_chrome` 和 `builds/chrome.zip`。在 Chrome 扩展页打开开发者模式，加载含 manifest.json 的目录。
+- 生产构建输出：`builds/build_chrome` 和 `builds/chrome_edge.zip`。在 Chrome 扩展页打开开发者模式，加载含 manifest.json 的目录。
 - 尚未对原版做逐像素对比，也未逐项浏览器验收 Firefox、截图下载和所有快捷键。安装过程中 npm 对旧技术栈报告了依赖漏洞，未在本次范围内整体升级。
 - 抽样按近到远存历史，过滤窗口后累计权重随机抽取，时间 O(n + w)，空间 O(n + w)，n 为候选数、w 为历史长度。候选全部在窗口内时优先释放最早一次；Web Locks 串行化跨标签页写入。存储写入失败时仅当前页内保持历史。用户固定的诗句或颜色不走抽样。
 - 此产物为本地安装版，未上架。原版资产的独立授权范围和依赖再分发细节仍需在公开分发前确认，见[架构审计](architecture-audit.md)及[鸣谢](../CREDITS.md)。

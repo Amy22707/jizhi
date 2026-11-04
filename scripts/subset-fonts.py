@@ -39,11 +39,13 @@ for source, name in [
     tool.populate(text=''.join(sorted(font_chars)))
     tool.subset(font)
     if name == 'JizhiFengqi':
-        # The source uses zero or near-zero vertical advances for upright Nushu glyphs.
-        # Give each affected outline a centered vertical cell with breathing room.
+        # Upright Nushu glyphs have near-zero advances, and title brackets
+        # have negative top bearings that push the ink into adjacent cells.
+        cmap = font.getBestCmap()
+        title_brackets = {cmap.get(ord(char)) for char in '「」'}
         for glyph_name, (advance, _) in font['vmtx'].metrics.items():
             glyph = font['glyf'][glyph_name]
-            if advance > 1 or not hasattr(glyph, 'yMax'):
+            if (advance > 1 and glyph_name not in title_brackets) or not hasattr(glyph, 'yMax'):
                 continue
             height = glyph.yMax - glyph.yMin
             cell = max(font['head'].unitsPerEm, height + font['head'].unitsPerEm // 10)

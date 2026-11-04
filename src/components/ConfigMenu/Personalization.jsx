@@ -1,16 +1,8 @@
 import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Menu, Pane, SegmentedControl, Text, TextInput } from 'evergreen-ui';
-import styled from 'styled-components';
 import { colorOptions, verseOptions } from '../../utils/enhanced';
 import { convertScript } from '../../utils/verseScript';
-
-const SizeSlider = styled.input`
-  width: 100%;
-  height: 4px;
-  accent-color: #1070ca;
-  margin: 10px 0 4px;
-`;
 
 const favorites = [
   '38f07d0b930f342a9c6e', // 白日依山尽
@@ -94,23 +86,6 @@ export default function Personalization({ settings, onChange }) {
             onChange={(value) => onChange('verse', value)}
           />
           {query.trim() && !matches.length && <Text marginLeft={16}>没有找到匹配的诗句</Text>}
-        </Pane>
-      </Menu.Group>
-      <Menu.Divider />
-      <Menu.Group title="诗句字号">
-        <Pane marginX={16}>
-          <Text size={300} is="label" htmlFor="verse-size">
-            {settings.size || 30}
-          </Text>
-          <SizeSlider
-            id="verse-size"
-            aria-label="诗句字号"
-            type="range"
-            min={18}
-            max={48}
-            value={settings.size || 30}
-            onChange={(event) => onChange('size', Number(event.target.value))}
-          />
         </Pane>
       </Menu.Group>
       <Menu.Divider />

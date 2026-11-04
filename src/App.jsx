@@ -6,6 +6,7 @@ import blobs from './sketchs/blobs';
 import Verses from './components/Verses';
 import ConfigMenu from './components/ConfigMenu';
 import SearchInput from './components/SearchInput';
+import Shortcuts from './components/Shortcuts';
 import ColorName from './components/ColorName';
 import { saveBackground, isDarkModeEnabled } from './utils';
 import Storager from './utils/storager';
@@ -267,6 +268,7 @@ class App extends Component {
                 : undefined
             }
             colorName={waveColor.name}
+            fontSize={personalization.colorNameSize}
             colorStayChecked={colorStayChecked}
             isDarkMode={isDarkMode}
           />
@@ -316,6 +318,7 @@ class App extends Component {
           onPersonalizationChange={this.changePersonalization}
           waveColor={waveColor}
         />
+        {personalization.showShortcuts === true && <Shortcuts isDarkMode={isDarkMode} />}
         {showSearchBarChecked && (
           <SearchInput
             value={value}

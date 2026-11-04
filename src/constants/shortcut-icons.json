@@ -1,0 +1,236 @@
+{
+  "chatgpt": {
+    "hosts": [
+      "chatgpt.com",
+      "chat.openai.com",
+      "chat.com"
+    ],
+    "file": "chatgpt.png",
+    "source": "https://cdn.oaistatic.com/assets/favicon-eex17e9e.ico"
+  },
+  "deepseek": {
+    "hosts": [
+      "deepseek.com",
+      "chat.deepseek.com",
+      "platform.deepseek.com"
+    ],
+    "file": "deepseek.png",
+    "source": "https://fe-static.deepseek.com/chat/icon-180.png"
+  },
+  "claude": {
+    "hosts": [
+      "claude.ai"
+    ],
+    "file": "claude.svg",
+    "source": "https://github.com/simple-icons/simple-icons/blob/b45ca1f11d9d013a7c462944d90a049bc613ad4f/icons/claude.svg"
+  },
+  "gemini": {
+    "hosts": [
+      "gemini.google.com"
+    ],
+    "file": "gemini.svg",
+    "source": "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg"
+  },
+  "kimi": {
+    "hosts": [
+      "kimi.com",
+      "kimi.moonshot.cn"
+    ],
+    "file": "kimi.png",
+    "source": "https://www.kimi.com/favicon.ico"
+  },
+  "doubao": {
+    "hosts": [
+      "doubao.com"
+    ],
+    "file": "doubao.png",
+    "source": "https://lf-flow-web-cdn.doubao.com/obj/flow-doubao/favicon/new-doubao/64x64.png"
+  },
+  "google": {
+    "hosts": [
+      "google.com",
+      "google.com.hk"
+    ],
+    "file": "google.png",
+    "source": "https://www.gstatic.com/images/branding/product/1x/gsa_48dp.png"
+  },
+  "bing": {
+    "hosts": [
+      "bing.com",
+      "cn.bing.com"
+    ],
+    "file": "bing.png",
+    "source": "https://www.bing.com/favicon.ico"
+  },
+  "baidu": {
+    "hosts": [
+      "baidu.com",
+      "m.baidu.com"
+    ],
+    "file": "baidu.png",
+    "source": "https://www.baidu.com/favicon.ico"
+  },
+  "github": {
+    "hosts": [
+      "github.com",
+      "gist.github.com"
+    ],
+    "file": "github.png",
+    "source": "https://github.githubassets.com/favicons/favicon.png"
+  },
+  "gitlab": {
+    "hosts": [
+      "gitlab.com"
+    ],
+    "file": "gitlab.svg",
+    "source": "https://github.com/simple-icons/simple-icons/blob/b45ca1f11d9d013a7c462944d90a049bc613ad4f/icons/gitlab.svg"
+  },
+  "stackoverflow": {
+    "hosts": [
+      "stackoverflow.com"
+    ],
+    "file": "stackoverflow.png",
+    "source": "https://cdn.sstatic.net/Sites/stackoverflow/Img/favicon.ico"
+  },
+  "mdn": {
+    "hosts": [
+      "developer.mozilla.org"
+    ],
+    "file": "mdn.png",
+    "source": "https://developer.mozilla.org/favicon.ico"
+  },
+  "youtube": {
+    "hosts": [
+      "youtube.com",
+      "youtu.be",
+      "m.youtube.com"
+    ],
+    "file": "youtube.svg",
+    "source": "https://github.com/simple-icons/simple-icons/blob/b45ca1f11d9d013a7c462944d90a049bc613ad4f/icons/youtube.svg"
+  },
+  "bilibili": {
+    "hosts": [
+      "bilibili.com",
+      "m.bilibili.com",
+      "b23.tv"
+    ],
+    "file": "bilibili.png",
+    "source": "https://www.bilibili.com/favicon.ico"
+  },
+  "zhihu": {
+    "hosts": [
+      "zhihu.com",
+      "zhuanlan.zhihu.com"
+    ],
+    "file": "zhihu.png",
+    "source": "https://www.zhihu.com/favicon.ico"
+  },
+  "weibo": {
+    "hosts": [
+      "weibo.com",
+      "weibo.cn",
+      "m.weibo.cn"
+    ],
+    "file": "weibo.png",
+    "source": "https://weibo.com/favicon.ico"
+  },
+  "douyin": {
+    "hosts": [
+      "douyin.com",
+      "v.douyin.com"
+    ],
+    "file": "douyin.png",
+    "source": "https://www.douyin.com/favicon.ico"
+  },
+  "xiaohongshu": {
+    "hosts": [
+      "xiaohongshu.com",
+      "xhslink.com"
+    ],
+    "file": "xiaohongshu.png",
+    "source": "https://www.xiaohongshu.com/favicon.ico"
+  },
+  "notion": {
+    "hosts": [
+      "notion.so",
+      "notion.com"
+    ],
+    "file": "notion.png",
+    "source": "https://www.notion.so/images/favicon.ico"
+  },
+  "wikipedia": {
+    "hosts": [
+      "wikipedia.org",
+      "zh.wikipedia.org",
+      "en.wikipedia.org",
+      "ja.wikipedia.org",
+      "zh.m.wikipedia.org",
+      "en.m.wikipedia.org"
+    ],
+    "file": "wikipedia.png",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/6/63/Wikipedia-logo.png"
+  },
+  "gmail": {
+    "hosts": [
+      "mail.google.com",
+      "gmail.com"
+    ],
+    "file": "gmail.png",
+    "source": "https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico"
+  },
+  "google-drive": {
+    "hosts": [
+      "drive.google.com"
+    ],
+    "file": "google-drive.png",
+    "source": "https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png"
+  },
+  "qq-mail": {
+    "hosts": [
+      "mail.qq.com",
+      "wx.mail.qq.com"
+    ],
+    "file": "qq-mail.png",
+    "source": "https://mail.qq.com/favicon.ico"
+  },
+  "feishu": {
+    "hosts": [
+      "feishu.cn"
+    ],
+    "file": "feishu.png",
+    "source": "https://www.feishu.cn/favicon.ico"
+  },
+  "taobao": {
+    "hosts": [
+      "taobao.com",
+      "m.taobao.com",
+      "item.taobao.com"
+    ],
+    "file": "taobao.png",
+    "source": "https://www.taobao.com/favicon.ico"
+  },
+  "jd": {
+    "hosts": [
+      "jd.com",
+      "item.jd.com"
+    ],
+    "file": "jd.png",
+    "source": "https://www.jd.com/favicon.ico"
+  },
+  "x": {
+    "hosts": [
+      "x.com",
+      "twitter.com"
+    ],
+    "file": "x.svg",
+    "source": "https://github.com/simple-icons/simple-icons/blob/b45ca1f11d9d013a7c462944d90a049bc613ad4f/icons/x.svg"
+  },
+  "reddit": {
+    "hosts": [
+      "reddit.com",
+      "old.reddit.com"
+    ],
+    "file": "reddit.png",
+    "source": "https://www.redditstatic.com/desktop2x/img/favicon/favicon-32x32.png"
+  }
+}

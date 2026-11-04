@@ -1,7 +1,7 @@
 import domtoimage from 'retina-dom-to-image';
 
 export const filter = (node) => {
-  return node.id !== 'menu-button' && node.id !== 'jizhi-search-icon';
+  return !['menu-button', 'jizhi-search-icon', 'jizhi-shortcuts'].includes(node.id);
 };
 
 export const isDarkModeEnabled = () => {

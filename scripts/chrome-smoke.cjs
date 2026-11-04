@@ -89,12 +89,12 @@ async function main() {
         const favorite = [...panel.querySelectorAll('[role=menuitemradio]')].find((item) => item.textContent.includes('明月几时有'));
         favorite?.click();
         resolve({ search: !!panel.querySelector('[aria-label="搜索诗句"]'),
-          size: !!panel.querySelector('[type=range]'), nativeSelect: !!panel.querySelector('select'),
+          size: !!panel.querySelector('[type=range]'), fontSizes: document.getElementById('panel-字体').querySelectorAll('[type=range]').length, nativeSelect: !!panel.querySelector('select'),
           favorite: !!favorite });
       }, 150);
     }, 150);
   })`);
-  assert.deepEqual(controls, { search: true, size: true, nativeSelect: false, favorite: true });
+  assert.deepEqual(controls, { search: true, size: false, fontSizes: 2, nativeSelect: false, favorite: true });
   assert.equal(await evaluate("JSON.parse(localStorage.getItem('personalization')).personalization.verse"), '2d84faf60c2a8a0a2a98');
   const pinned = require('../src/constants/enhanced-verses.json').find((verse) => verse.id === 'e9d41c44f2d80da227cb');
   await evaluate(`(() => {

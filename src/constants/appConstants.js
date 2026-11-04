@@ -13,6 +13,7 @@ export const BLOBS = 'blobs';
 export const HORIZONTAL = 'horizontal';
 export const VERTICAL = 'vertical';
 export const DEFAULT_FONT = 'wenkai';
+export const DEFAULT_COLOR_NAME_SIZE = 100;
 
 export const FONTS_INFO = {
   JXZhuoKai: {
