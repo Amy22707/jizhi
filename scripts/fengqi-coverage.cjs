@@ -6,8 +6,8 @@ const han = new Set(JSON.parse(execFileSync('python', ['-c', [
   'import json, sys',
   'from fontTools.ttLib import TTFont',
   'cmap = TTFont(sys.argv[1]).getBestCmap()',
-  'nushu = {glyph for code, glyph in cmap.items() if 0x1B170 <= code <= 0x1B2FF}',
-  'print(json.dumps([code for code, glyph in cmap.items() if 0x3400 <= code <= 0x9FFF and glyph in nushu]))',
+  'nvshu = {glyph for code, glyph in cmap.items() if 0x1B170 <= code <= 0x1B2FF}',
+  'print(json.dumps([code for code, glyph in cmap.items() if 0x3400 <= code <= 0x9FFF and glyph in nvshu]))',
 ].join('\n'), process.argv[2]], { encoding: 'utf8' })));
 const profiles = {
   original: (text) => text,

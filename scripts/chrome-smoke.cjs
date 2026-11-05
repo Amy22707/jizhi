@@ -104,7 +104,7 @@ async function main() {
   assert.equal(await evaluate("JSON.parse(localStorage.getItem('personalization')).personalization.verse"), '2d84faf60c2a8a0a2a98');
   const pinned = require('../src/constants/enhanced-verses.json').find((verse) => verse.id === 'e9d41c44f2d80da227cb');
   await evaluate(`(() => {
-    localStorage.setItem('fontName', JSON.stringify({ fontName: 'nyushu' }));
+    localStorage.setItem('fontName', JSON.stringify({ fontName: 'nvshu' }));
     localStorage.setItem('versesLayout', JSON.stringify({ versesLayout: 'vertical' }));
     localStorage.setItem('personalization', JSON.stringify({ personalization: {
       size: 36, script: 'simplified', color: 'custom', custom: '#123456', verse: ${JSON.stringify(pinned.id)}

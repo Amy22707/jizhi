@@ -27,7 +27,7 @@ for source, name in [
         continue
     font = TTFont(Path('.data-work') / (source + '.ttf'))
     if name == 'JizhiFengqi':
-        # Han-to-Nushu glyph selection is encoded in cmap. The source layout tables
+        # Han-to-nvshu glyph selection is encoded in cmap. The source layout tables
         # cannot be parsed by fontTools and are unnecessary for the poem display.
         for table in ('GSUB', 'GPOS', 'GDEF', 'DSIG'):
             if table in font:
@@ -39,7 +39,7 @@ for source, name in [
     tool.populate(text=''.join(sorted(font_chars)))
     tool.subset(font)
     if name == 'JizhiFengqi':
-        # Upright Nushu glyphs have near-zero advances, and title brackets
+        # Upright nvshu glyphs have near-zero advances, and title brackets
         # have negative top bearings that push the ink into adjacent cells.
         cmap = font.getBestCmap()
         title_brackets = {cmap.get(ord(char)) for char in '「」'}

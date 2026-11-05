@@ -110,14 +110,14 @@ const MenuContent = (props) => {
         { label: '霞鹜文楷', value: 'wenkai' },
       ],
     },
-    { title: '女书', options: [{ label: '女书凤栖 · Nyushu', value: 'nyushu' }] },
+    { title: '女书', options: [{ label: '女书凤栖 · nvshu', value: 'nvshu' }] },
   ];
 
   const fontOptions = fontGroups.flatMap(({ options }) => options);
-  const originalFontOptions = fontOptions.filter(({ value }) => value !== 'nyushu');
+  const originalFontOptions = fontOptions.filter(({ value }) => value !== 'nvshu');
   const followsPoemFont = personalization.followPoemFont ?? !personalization.colorFont;
   const colorFont = followsPoemFont ? fontName : personalization.colorFont || DEFAULT_FONT;
-  const usesNushuColor = colorFont === 'nyushu';
+  const usesNvshuColor = colorFont === 'nvshu';
   const renderFontGroups = (selectedFont, onChange) =>
     fontGroups.map(({ title, options }) => (
       <Menu.Group key={title} title={title}>
@@ -344,17 +344,17 @@ const MenuContent = (props) => {
             </Pane>
           </Menu.Group>
           <Menu.Divider />
-          {fontName === 'nyushu' && (
+          {fontName === 'nvshu' && (
             <>
               <Menu.Group title="女书">
                 <Pane marginX={16} paddingY={4}>
                   <SwitchWrapper>
-                    <label htmlFor="show-nushu-original">显示诗句、作者和篇名原文</label>
+                    <label htmlFor="show-nvshu-original">显示诗句、作者和篇名原文</label>
                     <Switch
-                      id="show-nushu-original"
-                      checked={!!personalization.showNushuOriginal}
+                      id="show-nvshu-original"
+                      checked={!!personalization.showNvshuOriginal}
                       onChange={(event) =>
-                        onPersonalizationChange('showNushuOriginal', event.target.checked)
+                        onPersonalizationChange('showNvshuOriginal', event.target.checked)
                       }
                     />
                   </SwitchWrapper>
@@ -382,21 +382,21 @@ const MenuContent = (props) => {
           </Menu.Group>
           {!followsPoemFont &&
             renderFontGroups(colorFont, (value) => onPersonalizationChange('colorFont', value))}
-          {usesNushuColor && (
+          {usesNvshuColor && (
             <Pane marginX={16} paddingY={8}>
               <SwitchWrapper>
-                <label htmlFor="show-nushu-color-original">显示颜色名原文</label>
+                <label htmlFor="show-nvshu-color-original">显示颜色名原文</label>
                 <Switch
-                  id="show-nushu-color-original"
-                  checked={!!personalization.showNushuColorOriginal}
+                  id="show-nvshu-color-original"
+                  checked={!!personalization.showNvshuColorOriginal}
                   onChange={(event) =>
-                    onPersonalizationChange('showNushuColorOriginal', event.target.checked)
+                    onPersonalizationChange('showNvshuColorOriginal', event.target.checked)
                   }
                 />
               </SwitchWrapper>
             </Pane>
           )}
-          {(fontName === 'nyushu' || usesNushuColor) && (
+          {(fontName === 'nvshu' || usesNvshuColor) && (
             <>
               <Menu.Group title="原文字形（诗句和色名）">
                 <Pane marginX={16}>
@@ -406,21 +406,21 @@ const MenuContent = (props) => {
                       { value: 'simplified', label: '简体' },
                       { value: 'traditional', label: '繁體' },
                     ]}
-                    value={personalization.nushuOriginalScript || 'traditional'}
-                    onChange={(value) => onPersonalizationChange('nushuOriginalScript', value)}
+                    value={personalization.nvshuOriginalScript || 'traditional'}
+                    onChange={(value) => onPersonalizationChange('nvshuOriginalScript', value)}
                   />
                 </Pane>
               </Menu.Group>
               {renderFontPicker(
                 '原文字体（诗句和色名）',
-                'nushuOriginalFont',
+                'nvshuOriginalFont',
                 originalFontOptions,
                 'wenkai'
               )}
             </>
           )}
           <Menu.Divider />
-          {fontName === 'nyushu' && (
+          {fontName === 'nvshu' && (
             <InlineAlert intent="none" margin={12}>
               凤栖会逐字显示诗句。没有女书对应字形的字会显示为汉字。
             </InlineAlert>

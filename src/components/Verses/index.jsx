@@ -50,7 +50,7 @@ const Verses = (props) => {
     fontName,
     isDarkMode,
     fontSize,
-    showNushuOriginal,
+    showNvshuOriginal,
     originalScript,
     originalFont,
     script,
@@ -67,7 +67,7 @@ const Verses = (props) => {
       <VersesContent
         fontSize={fontSize}
         originalFont={originalFont}
-        original={showNushuOriginal ? displayVerse(verses, originalScript) : undefined}
+        original={showNvshuOriginal ? displayVerse(verses, originalScript) : undefined}
         originalScript={originalScript}
         verses={displayVerse(verses, script)}
         engineOption={engineOption}
@@ -84,7 +84,7 @@ Verses.propTypes = {
   engineOption: PropTypes.string,
   fontName: PropTypes.string,
   fontSize: PropTypes.number,
-  showNushuOriginal: PropTypes.bool,
+  showNvshuOriginal: PropTypes.bool,
   originalScript: PropTypes.string,
   originalFont: PropTypes.string,
   script: PropTypes.string,

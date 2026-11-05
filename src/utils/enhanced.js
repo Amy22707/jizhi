@@ -9,7 +9,7 @@ export const verseOptions = verses.filter(
   (verse) => verse.id && verse.content && verse.author && verse.title
 );
 export const fonts = {
-  nyushu: 'JizhiFengqi, JizhiLiterary, serif',
+  nvshu: 'JizhiFengqi, JizhiLiterary, serif',
   mashan: '"JizhiBrush", "JizhiLiterary", serif',
   xiaowei: '"JizhiSong", "JizhiLiterary", serif',
   notoseriftc: '"Noto Serif TC", "JizhiLiterary", serif',
@@ -22,6 +22,8 @@ export const fonts = {
 };
 
 const legacyFonts = {
+  nyushu: 'nvshu',
+  nushu: 'nvshu',
   sourcehan: 'kesong',
   sourcehantc: 'notoseriftc',
   kai: 'zhenkai',
@@ -44,7 +46,7 @@ const fengqiPools = Object.fromEntries(
 export const nextVerse = (fontName, script) =>
   persistentDraw(
     'verses',
-    fontName === 'nyushu' ? fengqiPools[script] || fengqiPools.original : verseOptions,
+    fontName === 'nvshu' ? fengqiPools[script] || fengqiPools.original : verseOptions,
     200,
     (verse) => verse.id,
     (verse) => (verse.tier === 'featured' ? 5 : 1)

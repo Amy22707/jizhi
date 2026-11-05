@@ -123,7 +123,7 @@ async function main() {
     const before = await frame();
     await delay(450);
     assert.notEqual(await frame(), before, 'Canvas did not animate');
-    await evalPage(`localStorage.setItem('fontName', JSON.stringify({fontName:'nyushu'}));
+    await evalPage(`localStorage.setItem('fontName', JSON.stringify({fontName:'nvshu'}));
       localStorage.setItem('personalization', JSON.stringify({personalization:{verse:'e9d41c44f2d80da227cb',script:'simplified',color:'custom',custom:'#123456',customColorName:'烟岚青'}}));`);
     await call('POST', '/refresh', {});
     await ready();

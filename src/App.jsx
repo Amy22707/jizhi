@@ -10,6 +10,7 @@ import Shortcuts from './components/Shortcuts';
 import ColorName from './components/ColorName';
 import { saveBackground, isDarkModeEnabled } from './utils';
 import Storager from './utils/storager';
+import { migrateNvshuSettings } from './utils/nvshuSettings';
 import { findVerse, fonts, nextColor, nextVerse, resolveFont } from './utils/enhanced';
 import {
   HORIZONTAL,
@@ -63,7 +64,7 @@ class App extends Component {
         'colorMode',
       ],
       async (res) => {
-        const saved = res.personalization || {};
+        const saved = migrateNvshuSettings(res.personalization || {});
         const personalization = { ...saved, colorFont: resolveFont(saved.colorFont) || '' };
         const fontName = resolveFont(res.fontName) || DEFAULT_FONT;
         const colorMode = res.colorMode || 'os';
@@ -130,7 +131,7 @@ class App extends Component {
         Storager.set({ personalization });
         if (
           key === 'verse' ||
-          (key === 'script' && fontName === 'nyushu' && !personalization.verse)
+          (key === 'script' && fontName === 'nvshu' && !personalization.verse)
         ) {
           this.refreshVerse();
         } else if (key === 'color' || key === 'custom' || key === 'customColorName') {
@@ -220,7 +221,7 @@ class App extends Component {
     this.setState({ fontName }, () => {
       Storager.set({ fontName });
       if (!this.state.personalization.verse) {
-        if (fontName === 'nyushu') this.refreshVerse();
+        if (fontName === 'nvshu') this.refreshVerse();
         else this.verseRequest = (this.verseRequest || 0) + 1;
       }
     });
@@ -254,8 +255,8 @@ class App extends Component {
     } = this.state;
     const followsPoemFont = personalization.followPoemFont ?? !personalization.colorFont;
     const colorFont = followsPoemFont ? fontName : personalization.colorFont || DEFAULT_FONT;
-    const originalScript = personalization.nushuOriginalScript || 'traditional';
-    const originalFont = fonts[personalization.nushuOriginalFont] || fonts[DEFAULT_FONT];
+    const originalScript = personalization.nvshuOriginalScript || 'traditional';
+    const originalFont = fonts[personalization.nvshuOriginalFont] || fonts[DEFAULT_FONT];
     const sketches = { blobs, waves };
 
     return selected ? (
@@ -267,7 +268,7 @@ class App extends Component {
             fontName={fonts[colorFont]}
             originalScript={originalScript}
             originalFont={
-              colorFont === 'nyushu' && personalization.showNushuColorOriginal
+              colorFont === 'nvshu' && personalization.showNvshuColorOriginal
                 ? originalFont
                 : undefined
             }
@@ -284,7 +285,7 @@ class App extends Component {
           fontSize={personalization.size}
           script={personalization.script}
           originalScript={originalScript}
-          showNushuOriginal={fontName === 'nyushu' && !!personalization.showNushuOriginal}
+          showNvshuOriginal={fontName === 'nvshu' && !!personalization.showNvshuOriginal}
           originalFont={originalFont}
           isVerticalVerses={isVerticalVerses}
           engineOption={engineOption}
