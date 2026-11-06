@@ -10,7 +10,7 @@ A Chrome/Firefox/Edge new-tab extension featuring Chinese poetry and animated wa
 
 [前往 GitHub Releases 查看所有版本](https://github.com/Amy22707/jizhi/releases)
 
-当前预览版：[v2.5.2](https://github.com/Amy22707/jizhi/releases/tag/v2.5.2)。支持桌面版 Chrome、Microsoft Edge 和 Firefox 142+。Chrome 和 Edge 分别提供安装包，运行文件相同。
+当前版本：[v2.5.2](https://github.com/Amy22707/jizhi/releases/tag/v2.5.2)。支持桌面版 Chrome、Microsoft Edge 和 Firefox 142+。Chrome 和 Edge 分别提供安装包，运行文件相同。
 
 | 浏览器 | 下载 | 本地加载方式 |
 | --- | --- | --- |
@@ -18,7 +18,7 @@ A Chrome/Firefox/Edge new-tab extension featuring Chinese poetry and animated wa
 | Edge | [edge.zip](https://github.com/Amy22707/jizhi/releases/download/v2.5.2/edge.zip) | 解压后打开 `edge://extensions/`，开启「开发人员模式」，点击「加载解压缩的扩展」，选择含 `manifest.json` 的目录。若提示扩展修改新标签页，选择「保留更改」。 |
 | Firefox 142+ | [firefox.zip](https://github.com/Amy22707/jizhi/releases/download/v2.5.2/firefox.zip) | 打开 `about:debugging#/runtime/this-firefox`，点击「临时载入附加组件」，选择 ZIP，或选择解压目录中的 `manifest.json`。 |
 
-**Firefox 当前提供的是未签名预览包**，临时加载在浏览器重启后需要重新操作。签名后的 XPI 和扩展商店入口将在后续提供。
+**Firefox 当前提供未签名的 ZIP 安装包**，临时加载在浏览器重启后需要重新操作。签名后的 XPI 和扩展商店入口将在后续提供。
 
 Chrome 和 Edge 更新本地构建后，可以在扩展卡片上点击「重新加载」。Firefox 也可在调试页面点击「重新载入」。
 
