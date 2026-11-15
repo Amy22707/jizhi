@@ -51,10 +51,11 @@ const Legal = ({ waveColor, selected }) => {
         <CustomLink url={JIZHI_LINKS.upstream.link} name={JIZHI_LINKS.upstream.name} />
       </Paragraph>
       <Paragraph size={400} marginTop="default">
-        离线诗库收录 {verseOptions.length.toLocaleString('zh-CN')} 条诗句，摘自
+        离线诗库收录 {verseOptions.length.toLocaleString('zh-CN')} 条诗句，主要摘自
         <CustomLink url="https://github.com/chinese-poetry/chinese-poetry" name="Chinese Poetry" />
-        的唐诗和宋词。波浪配色库收录 {colorOptions.length.toLocaleString('zh-CN')}{' '}
-        种传统色，来自原版几枝和
+        的唐诗和宋代诗词，版本以
+        <CustomLink url="https://www.guwendao.net/" name="古诗文网" />
+        为准。波浪配色库收录 {colorOptions.length.toLocaleString('zh-CN')} 种传统色，来自原版几枝和
         <CustomLink url="https://github.com/zerosoul/chinese-colors" name="Chinese Colors" />。
       </Paragraph>
       <Paragraph size={400} marginTop="default">

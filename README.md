@@ -8,15 +8,17 @@ A Chrome/Firefox/Edge new-tab extension featuring Chinese poetry and animated wa
 
 ## 下载与安装
 
+**Chrome 用户可直接从 [Chrome 网上应用店安装几枝·增强版](https://chromewebstore.google.com/detail/nnjilbkjbojilaejcbiahecgpnjodjjd)。**
+
 [前往 GitHub Releases 查看所有版本](https://github.com/Amy22707/jizhi/releases)
 
-当前版本：[v2.5.2](https://github.com/Amy22707/jizhi/releases/tag/v2.5.2)。支持桌面版 Chrome、Microsoft Edge 和 Firefox 142+。Chrome 和 Edge 分别提供安装包，运行文件相同。
+GitHub 最新版本为 [v2.5.3](https://github.com/Amy22707/jizhi/releases/tag/v2.5.3)。支持桌面版 Chrome、Microsoft Edge 和 Firefox 142+。下表提供手动加载用的 ZIP 安装包。
 
 | 浏览器 | 下载 | 本地加载方式 |
 | --- | --- | --- |
-| Chrome | [chrome.zip](https://github.com/Amy22707/jizhi/releases/download/v2.5.2/chrome.zip) | 解压后打开 `chrome://extensions/`，开启「开发者模式」，点击「加载已解压的扩展程序」，选择含 `manifest.json` 的目录。 |
-| Edge | [edge.zip](https://github.com/Amy22707/jizhi/releases/download/v2.5.2/edge.zip) | 解压后打开 `edge://extensions/`，开启「开发人员模式」，点击「加载解压缩的扩展」，选择含 `manifest.json` 的目录。若提示扩展修改新标签页，选择「保留更改」。 |
-| Firefox 142+ | [firefox.zip](https://github.com/Amy22707/jizhi/releases/download/v2.5.2/firefox.zip) | 打开 `about:debugging#/runtime/this-firefox`，点击「临时载入附加组件」，选择 ZIP，或选择解压目录中的 `manifest.json`。 |
+| Chrome | [chrome.zip](https://github.com/Amy22707/jizhi/releases/download/v2.5.3/chrome.zip) | 解压后打开 `chrome://extensions/`，开启「开发者模式」，点击「加载已解压的扩展程序」，选择含 `manifest.json` 的目录。 |
+| Edge | [edge.zip](https://github.com/Amy22707/jizhi/releases/download/v2.5.3/edge.zip) | 解压后打开 `edge://extensions/`，开启「开发人员模式」，点击「加载解压缩的扩展」，选择含 `manifest.json` 的目录。若提示扩展修改新标签页，选择「保留更改」。 |
+| Firefox 142+ | [firefox.zip](https://github.com/Amy22707/jizhi/releases/download/v2.5.3/firefox.zip) | 打开 `about:debugging#/runtime/this-firefox`，点击「临时载入附加组件」，选择 ZIP，或选择解压目录中的 `manifest.json`。 |
 
 **Firefox 当前提供未签名的 ZIP 安装包**，临时加载在浏览器重启后需要重新操作。签名后的 XPI 和扩展商店入口将在后续提供。
 
@@ -38,9 +40,10 @@ npm run build:all
 ## 功能
 
 - 打开新标签页，欣赏中国传统色的层叠波浪或 Blobs 动画。保留浅色、深色和跟随系统、动静切换、横排与竖排、色名淡出、可选搜索框和背景截图。空格暂停或播放，波浪背景下左右键换色，Alt+S 保存背景。
-- 8,501 条离线诗句，精选篇目更常出现。在随机模式下，诗句避开最近 200 条，波浪色避开最近 10 个。候选不足时会缩短去重范围。历史保存在这台浏览器；固定选择会一直显示。
+- 8,176 条离线诗句，精选篇目更常出现。在随机模式下，诗句避开最近 200 条，波浪色避开最近 10 个。候选不足时会缩短去重范围。历史保存在这台浏览器；固定选择会一直显示。
 - 658 种传统色。**春景、山水、秋景、月夜和雪景会提高相应色系的概率，每种合适的底色仍有机会出现。**
 - 齿轮 →「个性化」可选定传统色，或自定义波浪底色和名称，也可直接从推荐的唐诗宋词里固定一条，或用简体、繁体搜索诗句、作者和篇名。选回颜色里的「随机」或诗句里的「随机诗句」即可恢复轮换。
+- 在「个性化 → 自定义句库」添加自己的句子，可选填作者和作品名。可以固定其中一句、与内置诗库一起随机，或只随机显示自己的句库。句库保存在当前浏览器，支持搜索、编辑和移除。
 
 - 常用网址默认关闭。在齿轮菜单的「设置」中打开「显示常用网址」后，可在新标签页左侧固定最多 8 个网址。竖栏内置一批常用网站图标，可离线显示。其他网站默认显示站名首字。打开「联网加载网站图标」后会尝试读取本站图标。点击「添加网址」输入地址，悬停在卡片上或用键盘聚焦后，点击「···」编辑或移除。网址保存在当前浏览器。关闭后重新打开，会恢复已固定的网址。
 
@@ -108,8 +111,9 @@ npm run build:all
 [Chrome Web Store 地址](https://chrome.google.com/webstore/detail/%E5%87%A0%E6%9E%9D/hfohpokminpknagcgncibpacohagppjn) | [Firefox Add-ons 地址](https://addons.mozilla.org/en-US/firefox/addon/jizhi/) | [Edge Add-ons 地址](https://microsoftedge.microsoft.com/addons/detail/%E5%87%A0%E6%9E%9D/jpfojjhemjbonldgbbfplhnpjdfhlppe)
 
 - 感谢原作者 Unicar、原版贡献者和开源数据、字体维护者。详见[鸣谢](./CREDITS.md)和[数据来源](./docs/data-sources.md)。
+- 感谢 [nushu-script/Nyushu](https://github.com/nushu-script/Nyushu) 的维护者提供女书凤栖字体。
 - 层叠的波浪动画效果是利用[p5.js](http://p5js.org/)实现的。
-- 离线诗词来自 [chinese-poetry](https://github.com/chinese-poetry/chinese-poetry)，新增配色优先使用 [zerosoul/chinese-colors](https://github.com/zerosoul/chinese-colors)。
+- 离线诗词主要从 [chinese-poetry](https://github.com/chinese-poetry/chinese-poetry) 选录，版本以[古诗文网](https://www.guwendao.net/)为准。新增配色优先使用 [zerosoul/chinese-colors](https://github.com/zerosoul/chinese-colors)。
 - 中国传统色名称及色号参考了以下来源：
   - [中国色－中国传统颜色](http://zhongguose.com/)
   - [Traditional Chinese Colors | 中国传统颜色](http://boxingp.github.io/traditional-chinese-colors/)

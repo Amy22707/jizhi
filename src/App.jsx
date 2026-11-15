@@ -69,10 +69,9 @@ class App extends Component {
         const fontName = resolveFont(res.fontName) || DEFAULT_FONT;
         const colorMode = res.colorMode || 'os';
         const isDarkMode = colorMode === 'os' ? isDarkModeEnabled() : colorMode === 'dark';
-        const verses =
-          findVerse(personalization.verse) ||
-          (await nextVerse(fontName, personalization.script)) ||
-          DEFAULT_SHICI;
+        const fixedVerse = findVerse(personalization.verse, personalization.customVerses);
+        if (fixedVerse) personalization.verse = fixedVerse.id;
+        const verses = fixedVerse || (await nextVerse(fontName, personalization)) || DEFAULT_SHICI;
         const waveColor = await nextColor(
           isDarkMode,
           verses,
@@ -117,24 +116,29 @@ class App extends Component {
     const request = (this.verseRequest = (this.verseRequest || 0) + 1);
     const { fontName, personalization } = this.state;
     const verses =
-      findVerse(personalization.verse) ||
-      (await nextVerse(fontName, personalization.script)) ||
+      findVerse(personalization.verse, personalization.customVerses) ||
+      (await nextVerse(fontName, personalization)) ||
       DEFAULT_SHICI;
     if (request === this.verseRequest) this.setState({ verses }, this.refreshColor);
   };
 
   changePersonalization = (key, value) => {
+    const changes = typeof key === 'string' ? { [key]: value } : key;
     this.setState(
-      ({ personalization }) => ({ personalization: { ...personalization, [key]: value } }),
+      ({ personalization }) => ({ personalization: { ...personalization, ...changes } }),
       () => {
         const { personalization, fontName } = this.state;
         Storager.set({ personalization });
         if (
-          key === 'verse' ||
-          (key === 'script' && fontName === 'nvshu' && !personalization.verse)
+          'verse' in changes ||
+          ('script' in changes && fontName === 'nvshu' && !personalization.verse)
         ) {
           this.refreshVerse();
-        } else if (key === 'color' || key === 'custom' || key === 'customColorName') {
+        } else if ('customVerses' in changes && this.state.verses.custom) {
+          const current = findVerse(this.state.verses.id, personalization.customVerses);
+          if (!current) this.refreshVerse();
+          else if (current !== this.state.verses) this.setState({ verses: current });
+        } else if ('color' in changes || 'custom' in changes || 'customColorName' in changes) {
           this.refreshColor();
         }
       }
@@ -205,7 +209,7 @@ class App extends Component {
   };
 
   handleKeyDown = ({ keyCode, altKey, target }) => {
-    if (target.closest('input, select, button, a, [role="menuitem"]')) return;
+    if (target.closest('input, textarea, select, button, a, [role="menuitem"]')) return;
     // space
     if (keyCode === 32) this.setState((state) => ({ isPlaying: !state.isPlaying }));
     // S + alt

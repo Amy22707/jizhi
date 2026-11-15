@@ -8,20 +8,20 @@
   },
   "action": {
     "default_icon": {
-      "16": "./static/icons/jizhi-16.png",
-      "32": "./static/icons/jizhi-32.png",
-      "64": "./static/icons/jizhi-64.png",
-      "128": "./static/icons/jizhi-128.png"
+      "16": "static/icons/jizhi-16.png",
+      "32": "static/icons/jizhi-32.png",
+      "64": "static/icons/jizhi-64.png",
+      "128": "static/icons/jizhi-128.png"
     }
   },
   "chrome_url_overrides": {
     "newtab": "index.html"
   },
   "icons": {
-    "16": "./static/icons/jizhi-16.png",
-    "32": "./static/icons/jizhi-32.png",
-    "64": "./static/icons/jizhi-64.png",
-    "128": "./static/icons/jizhi-128.png"
+    "16": "static/icons/jizhi-16.png",
+    "32": "static/icons/jizhi-32.png",
+    "64": "static/icons/jizhi-64.png",
+    "128": "static/icons/jizhi-128.png"
   },
   "manifest_version": 3,
   "content_security_policy": {

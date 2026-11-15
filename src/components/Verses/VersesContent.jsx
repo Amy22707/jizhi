@@ -4,18 +4,31 @@ import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import { pureWords } from '../../utils';
 
+const poemSize = (size) => Math.min(48, Math.max(18, Number.isFinite(size) ? size : 30));
+const length = (text) => Array.from(text).length;
+
 const Content = styled.div`
-  font-size: calc(
-    ${({ fontSize }) => (Number.isFinite(fontSize) ? Math.min(48, Math.max(18, fontSize)) : 30)}px +
-      1vw
-  );
+  font-size: calc(${({ fontSize }) => poemSize(fontSize)}px + 1vw);
   width: 80vw;
   word-break: keep-all;
+  ${(props) =>
+    props.isCustom &&
+    css`
+      overflow-wrap: anywhere;
+      white-space: pre-line;
+    `};
   ${(props) =>
     props.isVertical &&
     css`
       width: auto;
+      font-size: min(
+        calc(${poemSize(props.fontSize)}px + 1vw),
+        ${76 / props.verticalMetrics.poemHeight}vh,
+        ${82 / props.verticalMetrics.poemWidth}vw
+      );
       line-height: 1.35;
+      text-align: center;
+      white-space: pre;
     `};
 `;
 
@@ -23,6 +36,11 @@ const OriginalOrigin = styled.div`
   font-size: 0.78em;
   margin-inline-start: 0.5em;
   opacity: 0.85;
+  ${(props) =>
+    props.isVertical &&
+    css`
+      margin-inline-start: 0;
+    `};
 `;
 
 const Original = styled.div`
@@ -33,6 +51,12 @@ const Original = styled.div`
   opacity: 0.78;
   text-align: center;
   word-break: keep-all;
+  ${(props) =>
+    props.verticalMetrics &&
+    css`
+      font-size: min(calc(14px + 0.45vw), ${76 / props.verticalMetrics.originalHeight}vh, 4vw);
+      white-space: nowrap;
+    `};
 `;
 
 const Origin = styled.div`
@@ -44,9 +68,14 @@ const Origin = styled.div`
   ${(props) =>
     props.isVertical &&
     css`
+      inline-size: max-content;
       margin: 0;
       margin-right: 10px;
+      /* Keep the spacing inside the centered title and stamp group. */
+      gap: 0.34em;
       text-align: center;
+      font-size: min(calc(10px + 1vw), ${76 / props.verticalMetrics.originHeight}vh, 4.5vw);
+      white-space: nowrap;
     `};
 `;
 
@@ -61,6 +90,7 @@ const Stamp = styled.span`
   ${(props) =>
     props.isVertical &&
     css`
+      margin: 0;
       padding: 3px 2px 4px;
     `};
 `;
@@ -73,14 +103,33 @@ const Search = styled.div`
   }
 `;
 
+const VerticalPunctuation = styled.span`
+  display: inline-flex;
+  inline-size: 1em;
+  block-size: 1em;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  writing-mode: horizontal-tb;
+  line-height: 1;
+
+  > span {
+    display: inline-block;
+    transform: ${({ mark }) =>
+      mark === '、' ? 'translate(-0.07em, -0.23em)' : 'translateX(-0.3em)'};
+  }
+`;
+
 const VersesContent = (props) => {
   const {
     verses: {
       content,
+      custom,
       origin: { author, title },
     },
     engineOption,
     isVertical,
+    isNvshu,
     fontSize,
     original,
     originalFont,
@@ -88,30 +137,81 @@ const VersesContent = (props) => {
   } = props;
 
   const searchLink = engineOption + encodeURIComponent(author + ' ' + title);
-  const filteredContent = isVertical ? pureWords(content) : content;
+  const columns = isVertical ? (pureWords(content).trim() || content).split(/\s+/) : [];
+  const verticalColumns = custom
+    ? columns.flatMap((column) => column.match(/.{1,8}/gu) || [])
+    : columns;
+  const originalContent = original && (isVertical ? pureWords(original.content) : original.content);
+  const originalTitle = original?.origin.title ? `「${original.origin.title}」` : '';
+  const originalAuthor = original?.origin.author || '';
+  const originalOrigin = [originalTitle, originalAuthor].filter(Boolean).join(' · ');
+  const titleContent = `「${title}」`;
+  const titleText = title && (
+    <span className="title">
+      {isVertical && isNvshu
+        ? titleContent.split(/([、·])/u).map((part, index) =>
+            part === '、' || part === '·' ? (
+              <VerticalPunctuation key={index} mark={part}>
+                <span>{part}</span>
+              </VerticalPunctuation>
+            ) : (
+              part
+            )
+          )
+        : titleContent}
+    </span>
+  );
+  // Allow for Fengqi's longer vertical advances, brackets, and the author stamp.
+  const verticalMetrics = isVertical
+    ? {
+        poemHeight: Math.max(1, ...verticalColumns.map(length)) * 1.45,
+        poemWidth: verticalColumns.length * 1.35 + 3,
+        originHeight: (length(title) + 2 + length(author) * 0.67) * 1.45 + 2.5,
+        originalHeight: original
+          ? Math.max(length(originalContent), length(originalOrigin) * 0.78) * 1.45
+          : 1,
+      }
+    : null;
 
   return (
     <>
-      <Content fontSize={fontSize} isVertical={isVertical}>
-        {filteredContent}
+      <Content
+        fontSize={fontSize}
+        isVertical={isVertical}
+        isCustom={custom}
+        verticalMetrics={verticalMetrics}
+      >
+        {isVertical ? verticalColumns.join('\n') : content}
       </Content>
-      <Origin isVertical={isVertical} hasOriginal={!!original}>
-        <a href={searchLink} target="_blank" rel="noopener noreferrer">
-          <span className="title">{`「${title}」`}</span>
-        </a>
-        <Stamp isVertical={isVertical}>{author}</Stamp>
-        <Search>
-          <Icon size={14} icon="search-text" color="black" />
-        </Search>
-      </Origin>
+      {(title || author) && (
+        <Origin isVertical={isVertical} hasOriginal={!!original} verticalMetrics={verticalMetrics}>
+          {title &&
+            (custom ? (
+              titleText
+            ) : (
+              <a href={searchLink} target="_blank" rel="noopener noreferrer">
+                {titleText}
+              </a>
+            ))}
+          {author && <Stamp isVertical={isVertical}>{author}</Stamp>}
+          {!isVertical && !custom && (
+            <Search>
+              <Icon size={14} icon="search-text" color="black" />
+            </Search>
+          )}
+        </Origin>
+      )}
       {original && (
         <Original
           aria-label="汉字原文"
           fontName={originalFont}
+          verticalMetrics={verticalMetrics}
           lang={originalScript === 'simplified' ? 'zh-Hans' : 'zh-Hant'}
         >
-          {isVertical ? pureWords(original.content) : original.content}
-          <OriginalOrigin>{`「${original.origin.title}」 · ${original.origin.author}`}</OriginalOrigin>
+          {originalContent}
+          {originalOrigin && (
+            <OriginalOrigin isVertical={isVertical}>{originalOrigin}</OriginalOrigin>
+          )}
         </Original>
       )}
     </>
@@ -121,6 +221,7 @@ const VersesContent = (props) => {
 VersesContent.propTypes = {
   verses: PropTypes.object,
   isVertical: PropTypes.bool,
+  isNvshu: PropTypes.bool,
   fontSize: PropTypes.number,
   original: PropTypes.shape({
     content: PropTypes.string.isRequired,

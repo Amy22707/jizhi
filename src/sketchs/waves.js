@@ -1,3 +1,5 @@
+const REFERENCE_HEIGHT = 900;
+
 export default function waves(p) {
   let mountains = [];
   let bgColor = '#e6e6e6';
@@ -44,15 +46,16 @@ export default function waves(p) {
 }
 
 class Mountain {
-  constructor(color, y, p) {
+  constructor(color, layerOffset, p) {
     this.c = color;
-    this.y = y;
+    this.layerOffset = layerOffset;
     this.offset = p.random(100, 200);
     this.t = 0;
   }
 
   display(p) {
     let xoff = 0;
+    const heightScale = p.height / REFERENCE_HEIGHT;
 
     p.noStroke();
     p.fill(this.c);
@@ -63,7 +66,7 @@ class Mountain {
     // Sample twice as often at the same noise scale.
     for (let x = 0; x <= p.width + 25; x += 12.5) {
       const yoff = p.map(p.noise(xoff + this.offset, this.t + this.offset), 0, 1, 0, 200);
-      const y = this.y - yoff;
+      const y = p.height - (this.layerOffset + yoff) * heightScale;
       p.vertex(x, y);
 
       xoff += 0.04;
@@ -81,8 +84,7 @@ function growMountains(p, mountains, hexColor) {
     const c = p.color(hexColor);
     const a = 255 - 50 * i;
     c.setAlpha(a);
-    const h = p.height - 50 * i;
-    const m = new Mountain(c, h, p);
+    const m = new Mountain(c, 50 * i, p);
     mountains.push(m);
   });
 }

@@ -36,21 +36,33 @@ export function resolveFont(name) {
   return Object.prototype.hasOwnProperty.call(legacyFonts, name) ? legacyFonts[name] : undefined;
 }
 
-export const findVerse = (id) => verseOptions.find((verse) => verse.id === id);
+const versesById = new Map(
+  verseOptions.flatMap((verse) => [verse.id, ...(verse.previousIds || [])].map((id) => [id, verse]))
+);
+
+export const findVerse = (id, customVerses = []) =>
+  customVerses.find((verse) => verse.id === id) || versesById.get(id);
 const fengqiPools = Object.fromEntries(
   Object.entries(coverage).map(([script, ids]) => {
     const allowed = new Set(ids);
     return [script, verseOptions.filter(({ id }) => allowed.has(id))];
   })
 );
-export const nextVerse = (fontName, script) =>
-  persistentDraw(
+export const nextVerse = (fontName, { script, customVerses = [], versePool }) => {
+  const builtIn = fontName === 'nvshu' ? fengqiPools[script] || fengqiPools.original : verseOptions;
+  let pool = builtIn;
+  if (versePool === 'custom' && customVerses.length) pool = customVerses;
+  if (versePool === 'mixed') pool = [...builtIn, ...customVerses];
+  // Older settings selected random participation one sentence at a time.
+  if (!versePool) pool = [...builtIn, ...customVerses.filter((verse) => verse.random)];
+  return persistentDraw(
     'verses',
-    fontName === 'nvshu' ? fengqiPools[script] || fengqiPools.original : verseOptions,
+    pool,
     200,
     (verse) => verse.id,
     (verse) => (verse.tier === 'featured' ? 5 : 1)
   );
+};
 
 export const nextColor = (dark, verse, fixed, custom, customName) => {
   const chosen = colorOptions.find((color) => color.hex === fixed);

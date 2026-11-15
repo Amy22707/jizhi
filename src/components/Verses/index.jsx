@@ -72,6 +72,7 @@ const Verses = (props) => {
         verses={displayVerse(verses, script)}
         engineOption={engineOption}
         isVertical={isVerticalVerses}
+        isNvshu={fontName.startsWith('JizhiFengqi')}
       />
     </VersesWrapper>
   );

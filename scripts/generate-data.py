@@ -12,6 +12,8 @@ def load(path):
 def save(path, value):
     path.write_text(json.dumps(value, ensure_ascii=False, separators=(',', ':')) + '\n', encoding='utf-8')
 
+song_titles = load(Path(__file__).with_name('song-ci-titles.json'))
+
 themes = {
     'spring': '春|桃花|柳|芳草|燕子|東風|东风',
     'landscape': '山|江|湖|溪|瀑|泉|峰|嶺|岭',
@@ -31,6 +33,17 @@ def extract(works, dynasty, tier, source):
         title = (work.get('title') or work.get('rhythmic') or '').strip()
         if not han(author) or len(author) > 12 or not title or len(title) > 36 or re.search('[□�<>〈〉]', title):
             continue
+        if dynasty == '宋':
+            title = song_titles['tunes'].get(title, title)
+            paragraphs = work.get('paragraphs', [])
+            if paragraphs:
+                opening = paragraphs[0].strip()
+                subtitle = song_titles['subtitles'].get(f'{author}|{opening}')
+                if not subtitle:
+                    first_line = re.split(r'[，。！？；：,.!?;:]', opening, maxsplit=1)[0]
+                    subtitle = re.sub(r'\s+', '', first_line)
+                if subtitle:
+                    title = f'{title}·{subtitle}'
         candidates = []
         for paragraph in work.get('paragraphs', []):
             text = re.sub(r'\s+', '', paragraph)
@@ -82,10 +95,56 @@ if not any(verse['id'] == reviewed_id for verse in verses):
         title='如意娘', dynasty='唐', source='chinese-poetry:poet.tang.2000',
         tier='extended', tags=tags(couplet),
     ))
-# Use the familiar author name while retaining source titles and stable IDs.
+# Use the familiar author name while retaining stable IDs.
 for verse in verses:
     if verse['author'] in ('則天皇后', '则天皇后'):
         verse['author'] = '武则天'
+
+# Replace reviewed variants and other extracts from the same work with its
+# representative excerpt. Keep the retired IDs for previously fixed verses.
+featured = load(Path(__file__).with_name('featured-excerpts.json'))
+replaced = [old_id for entry in featured for old_id in entry.get('replaces', [])]
+assert len(replaced) == len(set(replaced))
+assert set(replaced) <= {verse['id'] for verse in verses}
+verses = [verse for verse in verses if verse['id'] not in replaced]
+for entry in featured:
+    content = entry['content']
+    key = re.sub('[，、。！？]', '', content)
+    verse_id = hashlib.sha256(key.encode()).hexdigest()[:20]
+    assert all(verse['id'] != verse_id for verse in verses), content
+    previous_ids = [old for old in entry.get('replaces', []) if old != verse_id]
+    verse = {k: v for k, v in entry.items() if k != 'replaces'}
+    verse.update(id=verse_id, tier='featured', tags=tags(content))
+    if previous_ids:
+        verse['previousIds'] = previous_ids
+    verses.append(verse)
+
+gushiwen = load(Path(__file__).with_name('gushiwen-versions.json'))
+reviews = gushiwen['versions']
+aliases = gushiwen['aliases']
+by_id = {verse['id']: verse for verse in verses}
+assert (reviews.keys() | aliases.keys() | set(aliases.values())) <= by_id.keys()
+assert not (aliases.keys() & set(aliases.values()))
+for verse in verses:
+    review = reviews.get(verse['id'])
+    if review:
+        verse.update(review)
+        if 'content' in review:
+            verse['tags'] = tags(verse['content'])
+for old_id, kept_id in aliases.items():
+    old = by_id[old_id]
+    kept = by_id[kept_id]
+    kept.setdefault('previousIds', []).extend([old_id, *old.get('previousIds', [])])
+    if old['tier'] == 'featured':
+        kept['tier'] = 'featured'
+# Publish only excerpts with a matching reference from Gushiwen.
+verses = [
+    verse for verse in verses
+    if verse['id'] not in aliases and verse['source'].startswith(
+        ('https://www.guwendao.net/', 'gushiwen:')
+    )
+]
+
 assert 5000 <= len(verses) <= 10000
 save(OUT / 'enhanced-verses.json', verses)
 

@@ -14,7 +14,10 @@ test('dataset identity and 1,000 weighted draws avoid the most recent 200 verses
   const weight = (v) => v.tier === 'featured' ? 5 : 1;
   assert.equal(new Set(verses.map(key)).size, verses.length);
   assert.equal(new Set(verses.map((v) => v.content.replace(/[，、。！？]/g, ''))).size, verses.length);
-  assert.ok(verses.every((v) => v.author && v.title && v.dynasty && v.source));
+  const sourcePattern = /^(?:https:\/\/www\.guwendao\.net\/(?:shiwenv|gushiwen)_[0-9a-f]+\.aspx|gushiwen:(?:shiwenv_[0-9a-f]{12}|archive:\d+))$/u;
+  assert.ok(verses.every((v) => v.author && v.title && v.dynasty && sourcePattern.test(v.source)));
+  const idsAndAliases = verses.flatMap((verse) => [verse.id, ...(verse.previousIds || [])]);
+  assert.equal(new Set(idsAndAliases).size, idsAndAliases.length);
   let history = [];
   const unique = new Set();
   let featured = 0;

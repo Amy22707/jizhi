@@ -59,7 +59,7 @@ function verifyBrowser(browser) {
 
   for (const icons of [manifest.icons, manifest.action.default_icon]) {
     for (const [size, name] of Object.entries(icons)) {
-      const png = read(name.replace(/^\.\//, ''));
+      const png = read(name);
       assert.equal(png.readUInt32BE(16), Number(size), name);
       assert.equal(png.readUInt32BE(20), Number(size), name);
     }
