@@ -104,6 +104,7 @@ const Search = styled.div`
 `;
 
 const VerticalPunctuation = styled.span`
+  position: relative;
   display: inline-flex;
   inline-size: 1em;
   block-size: 1em;
@@ -118,6 +119,33 @@ const VerticalPunctuation = styled.span`
     transform: ${({ mark }) =>
       mark === '、' ? 'translate(-0.07em, -0.23em)' : 'translateX(-0.3em)'};
   }
+
+  ${({ mark }) =>
+    (mark === '·' || mark === '。') &&
+    css`
+      > span {
+        visibility: hidden;
+      }
+
+      &::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        box-sizing: border-box;
+        width: ${mark === '·' ? '0.12em' : '0.26em'};
+        height: ${mark === '·' ? '0.12em' : '0.26em'};
+        border-radius: 50%;
+        ${mark === '·'
+          ? css`
+              background: currentColor;
+            `
+          : css`
+              border: 0.05em solid currentColor;
+            `}
+      }
+    `};
 `;
 
 const VersesContent = (props) => {
@@ -149,8 +177,8 @@ const VersesContent = (props) => {
   const titleText = title && (
     <span className="title">
       {isVertical && isNvshu
-        ? titleContent.split(/([、·])/u).map((part, index) =>
-            part === '、' || part === '·' ? (
+        ? titleContent.split(/([、·。])/u).map((part, index) =>
+            part === '、' || part === '·' || part === '。' ? (
               <VerticalPunctuation key={index} mark={part}>
                 <span>{part}</span>
               </VerticalPunctuation>

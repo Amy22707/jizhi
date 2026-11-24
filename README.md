@@ -12,17 +12,17 @@ A Chrome/Firefox/Edge new-tab extension featuring Chinese poetry and animated wa
 
 **Firefox 用户可直接从 [Firefox Add-ons 安装几枝·增强版](https://addons.mozilla.org/firefox/addon/%E5%87%A0%E6%9E%9D-%E5%A2%9E%E5%BC%BA%E7%89%88/)，安装后可长期使用并通过商店更新。**
 
-最新版本为 v2.5.3，商店版本将在审核通过后同步。
+最新版本为 v2.5.4，商店版本将在审核通过后同步。
 
 [前往 GitHub Releases 查看所有版本](https://github.com/Amy22707/jizhi/releases)
 
-GitHub 最新版本为 [v2.5.3](https://github.com/Amy22707/jizhi/releases/tag/v2.5.3)。支持桌面版 Chrome、Microsoft Edge 和 Firefox 142+。下表提供手动加载用的 ZIP 安装包。
+GitHub 最新版本为 [v2.5.4](https://github.com/Amy22707/jizhi/releases/tag/v2.5.4)。支持桌面版 Chrome、Microsoft Edge 和 Firefox 142+。下表提供手动加载用的 ZIP 安装包。
 
 | 浏览器 | 下载 | 本地加载方式 |
 | --- | --- | --- |
-| Chrome | [chrome.zip](https://github.com/Amy22707/jizhi/releases/download/v2.5.3/chrome.zip) | 解压后打开 `chrome://extensions/`，开启「开发者模式」，点击「加载已解压的扩展程序」，选择含 `manifest.json` 的目录。 |
-| Edge | [edge.zip](https://github.com/Amy22707/jizhi/releases/download/v2.5.3/edge.zip) | 解压后打开 `edge://extensions/`，开启「开发人员模式」，点击「加载解压缩的扩展」，选择含 `manifest.json` 的目录。若提示扩展修改新标签页，选择「保留更改」。 |
-| Firefox 142+ | [firefox.zip](https://github.com/Amy22707/jizhi/releases/download/v2.5.3/firefox.zip) | 打开 `about:debugging#/runtime/this-firefox`，点击「临时载入附加组件」，选择 ZIP，或选择解压目录中的 `manifest.json`。 |
+| Chrome | [chrome.zip](https://github.com/Amy22707/jizhi/releases/download/v2.5.4/chrome.zip) | 解压后打开 `chrome://extensions/`，开启「开发者模式」，点击「加载已解压的扩展程序」，选择含 `manifest.json` 的目录。 |
+| Edge | [edge.zip](https://github.com/Amy22707/jizhi/releases/download/v2.5.4/edge.zip) | 解压后打开 `edge://extensions/`，开启「开发人员模式」，点击「加载解压缩的扩展」，选择含 `manifest.json` 的目录。若提示扩展修改新标签页，选择「保留更改」。 |
+| Firefox 142+ | [firefox.zip](https://github.com/Amy22707/jizhi/releases/download/v2.5.4/firefox.zip) | 打开 `about:debugging#/runtime/this-firefox`，点击「临时载入附加组件」，选择 ZIP，或选择解压目录中的 `manifest.json`。 |
 
 Firefox 推荐通过上方商店入口安装。下表中的 GitHub ZIP 用于开发调试，临时加载在浏览器重启后需要重新操作。
 
@@ -98,7 +98,7 @@ npm run build:all
 | 简繁皆可 | 香萃刻宋、朱雀仿宋、霞鹜文楷 |
 | 女书 | 女书凤栖 · nvshu |
 
-「诗词字形」可以独立于字体选择，提供「保留原文」「简体」和「繁體（台湾字形）」。此设置应用于诗句、篇名和作者的显示。所选字体缺少个别字形时，浏览器会使用后备字体。
+「诗词字形」可以独立于字体选择，提供「简体」和「繁體（台湾字形）」。此设置应用于诗句、篇名、作者和设置里的推荐与搜索结果。默认使用简体。所选字体缺少个别字形时，浏览器会使用后备字体。
 
 选择「女书凤栖 · nvshu」会对诗句正文逐字使用凤栖字形。凤栖字库随扩展内置，选择后即可离线使用。随机模式从当前简繁设置下每个汉字都有女书字形的诗句中抽取。内置子集保留诗库用到的 1,512 个汉字对应的女书字形。固定诗句中缺少对应字形的字会以汉字显示。扩展修正了凤栖的竖排字距，横排和竖排均可使用。
 

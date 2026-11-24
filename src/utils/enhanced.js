@@ -2,6 +2,7 @@ import colors from '../constants/enhanced-colors.json';
 import verses from '../constants/enhanced-verses.json';
 import coverage from '../constants/fengqi-covered-verses.json';
 import { persistentDraw } from './randomSelection';
+import { resolveScript } from './verseScript';
 
 const hexPattern = /^#[0-9a-f]{6}$/i;
 export const colorOptions = colors.filter((color) => color.name && hexPattern.test(color.hex));
@@ -49,7 +50,7 @@ const fengqiPools = Object.fromEntries(
   })
 );
 export const nextVerse = (fontName, { script, customVerses = [], versePool }) => {
-  const builtIn = fontName === 'nvshu' ? fengqiPools[script] || fengqiPools.original : verseOptions;
+  const builtIn = fontName === 'nvshu' ? fengqiPools[resolveScript(script)] : verseOptions;
   let pool = builtIn;
   if (versePool === 'custom' && customVerses.length) pool = customVerses;
   if (versePool === 'mixed') pool = [...builtIn, ...customVerses];

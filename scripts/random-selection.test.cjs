@@ -8,6 +8,16 @@ function seeded() {
   let state = 28770;
   return () => ((state = (Math.imul(state, 1664525) + 1013904223) >>> 0) / 2 ** 32);
 }
+test('common titles omit catalog labels and alternate-version notes', () => {
+  const verse = verses.find((item) => item.id === '97618e4db07e2ca57246');
+  assert.equal(verse.title, '饮酒乐');
+  assert.equal(verse.author, '聶夷中');
+  for (const item of verses) {
+    const title = item.title.replace(/（[^）]*）|\([^)]*\)/gu, '');
+    assert.doesNotMatch(title, /[。．.]/u, item.title);
+    assert.doesNotMatch(item.title, /[（(]一作|^(?:杂曲歌辞|横吹曲辞|相和歌辞|舞曲歌辞|琴曲歌辞|杂歌谣辞)[·\s]/u);
+  }
+});
 test('dataset identity and 1,000 weighted draws avoid the most recent 200 verses', () => {
   assert.ok(verses.length >= 5000 && verses.length <= 10000);
   const key = (v) => v.id;

@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Menu, Pane, SegmentedControl, Text, Textarea, TextInput } from 'evergreen-ui';
 import { colorOptions, findVerse, verseOptions } from '../../utils/enhanced';
-import { convertScript } from '../../utils/verseScript';
+import { convertScript, resolveScript } from '../../utils/verseScript';
 
 const favorites = [
   '38f07d0b930f342a9c6e', // 白日依山尽
@@ -72,7 +72,7 @@ export default function Personalization({ settings, onChange }) {
     return [...customMatches, ...searchVerses(query)].slice(0, 30);
   }, [customVerses, query]);
   const choices = current && !matches.includes(current) ? [current, ...matches] : matches;
-  const script = settings.script || 'simplified';
+  const script = resolveScript(settings.script);
   const verseChoices = choices.map(({ id, content, author, title, custom }) => ({
     value: id,
     label: convertScript(
@@ -197,7 +197,10 @@ export default function Personalization({ settings, onChange }) {
               {customVerses.map((verse) => (
                 <Pane key={verse.id} paddingY={8} borderBottom="muted">
                   <Text display="block" overflowWrap="anywhere" size={300}>
-                    {[verse.content, verse.author, verse.title].filter(Boolean).join(' · ')}
+                    {convertScript(
+                      [verse.content, verse.author, verse.title].filter(Boolean).join(' · '),
+                      script
+                    )}
                   </Text>
                   <Pane display="flex" gap={8} marginTop={4}>
                     <Button

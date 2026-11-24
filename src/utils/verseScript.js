@@ -6,14 +6,18 @@ const profiles = {
 };
 const converters = {};
 
+export const resolveScript = (script) => (script === 'traditional' ? 'traditional' : 'simplified');
+
 export function convertScript(text, script) {
-  if (script !== 'simplified' && script !== 'traditional') return text;
+  script = resolveScript(script);
+  if (!converters.simplified) converters.simplified = OpenCC.Converter(profiles.simplified);
+  const simplified = converters.simplified(text);
+  if (script === 'simplified') return simplified;
   if (!converters[script]) converters[script] = OpenCC.Converter(profiles[script]);
-  return converters[script](text);
+  return converters[script](simplified);
 }
 
 export function displayVerse(verse, script) {
-  if (script !== 'simplified' && script !== 'traditional') return verse;
   const convert = (text) => convertScript(text, script);
   return {
     ...verse,

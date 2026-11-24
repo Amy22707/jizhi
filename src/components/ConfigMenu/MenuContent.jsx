@@ -334,11 +334,10 @@ const MenuContent = (props) => {
               <SegmentedControl
                 width="100%"
                 options={[
-                  { value: 'original', label: '保留原文' },
                   { value: 'simplified', label: '简体' },
                   { value: 'traditional', label: '繁體' },
                 ]}
-                value={personalization.script || 'original'}
+                value={personalization.script === 'traditional' ? 'traditional' : 'simplified'}
                 onChange={(value) => onPersonalizationChange('script', value)}
               />
             </Pane>

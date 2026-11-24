@@ -146,6 +146,14 @@ verses = [
 ]
 
 assert 5000 <= len(verses) <= 10000
+# Old catalog titles use full stops between a collection and a work name.
+# Preserve punctuation inside parenthetical source notes.
+for verse in verses:
+    parts = re.split(r'(（[^）]*）|\([^)]*\))', verse['title'])
+    verse['title'] = ''.join(
+        part if index % 2 else re.sub(r'[。．.]', '·', part)
+        for index, part in enumerate(parts)
+    )
 save(OUT / 'enhanced-verses.json', verses)
 
 def moods(hex):

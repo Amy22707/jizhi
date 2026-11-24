@@ -9,10 +9,12 @@ const han = new Set(JSON.parse(execFileSync('python', ['-c', [
   'nvshu = {glyph for code, glyph in cmap.items() if 0x1B170 <= code <= 0x1B2FF}',
   'print(json.dumps([code for code, glyph in cmap.items() if 0x3400 <= code <= 0x9FFF and glyph in nvshu]))',
 ].join('\n'), process.argv[2]], { encoding: 'utf8' })));
+const toSimplified = Converter({ from: 'tw', to: 'cn' });
+const toTraditional = Converter({ from: 'cn', to: 'tw' });
 const profiles = {
   original: (text) => text,
-  simplified: Converter({ from: 'tw', to: 'cn' }),
-  traditional: Converter({ from: 'cn', to: 'tw' }),
+  simplified: toSimplified,
+  traditional: (text) => toTraditional(toSimplified(text)),
 };
 const coverage = {};
 for (const [script, convert] of Object.entries(profiles)) {

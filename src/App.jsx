@@ -11,6 +11,7 @@ import ColorName from './components/ColorName';
 import { saveBackground, isDarkModeEnabled } from './utils';
 import Storager from './utils/storager';
 import { migrateNvshuSettings } from './utils/nvshuSettings';
+import { resolveScript } from './utils/verseScript';
 import { findVerse, fonts, nextColor, nextVerse, resolveFont } from './utils/enhanced';
 import {
   HORIZONTAL,
@@ -43,7 +44,7 @@ class App extends Component {
       focused: false,
       fontName: DEFAULT_FONT,
       waveColor: defaultColor,
-      personalization: {},
+      personalization: { script: 'simplified' },
     };
   }
 
@@ -65,7 +66,11 @@ class App extends Component {
       ],
       async (res) => {
         const saved = migrateNvshuSettings(res.personalization || {});
-        const personalization = { ...saved, colorFont: resolveFont(saved.colorFont) || '' };
+        const personalization = {
+          ...saved,
+          script: resolveScript(saved.script),
+          colorFont: resolveFont(saved.colorFont) || '',
+        };
         const fontName = resolveFont(res.fontName) || DEFAULT_FONT;
         const colorMode = res.colorMode || 'os';
         const isDarkMode = colorMode === 'os' ? isDarkModeEnabled() : colorMode === 'dark';

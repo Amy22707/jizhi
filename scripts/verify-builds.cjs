@@ -5,6 +5,9 @@ const AdmZip = require('adm-zip');
 const { buildRoot, buildDirectory, selectedTargets } = require('../build');
 const { version } = require('../package.json');
 
+assert.equal(require('../package-lock.json').version, version, 'Lockfile version differs');
+assert.equal(require('../package-lock.json').packages[''].version, version, 'Locked package version differs');
+
 const forbidden =
   /(?:^|\/)(?:node_modules|\.git|\.data-work|\.env[^/]*)(?:\/|$)|\.(?:pem|key|p12|pfx|crx|xpi|exe|log|map)$/i;
 
@@ -89,9 +92,11 @@ function verifyBrowser(browser) {
     ([name]) => name.startsWith('assets/') && name.endsWith('.js')
   );
   const js = assets.map(([, content]) => content.toString('utf8')).join('\n');
-  // Both datasets are bundled into JavaScript rather than fetched at runtime.
-  assert.ok(js.includes(require('../src/constants/enhanced-verses.json')[0].id));
-  assert.ok(js.includes(require('../src/constants/enhanced-colors.json')[0].hex));
+  // Check the complete datasets so stale bundles with the same IDs cannot pass.
+  for (const name of ['enhanced-verses.json', 'enhanced-colors.json']) {
+    const dataset = require(path.join(__dirname, '../src/constants', name));
+    assert.ok(js.includes(JSON.stringify(dataset)), 'Bundled dataset differs: ' + name);
+  }
   assert.doesNotMatch(js, /jinrishici\.com\/one\.json|netlify\.app\/.*\.woff\.json/);
   const output = buildDirectory(browser);
   const outputFiles = fs
@@ -124,6 +129,7 @@ if (results.has('firefox')) {
   const source = openZip(path.join(buildRoot, 'firefox-source.zip'));
   for (const file of [
     'README.md',
+    'package.json',
     'package-lock.json',
     'firefox.manifest.json',
     'src/App.jsx',
@@ -131,5 +137,11 @@ if (results.has('firefox')) {
     'docs/FIREFOX_SOURCE_BUILD.md',
   ])
     assert.ok(source.get(file)?.length, 'Missing from Firefox source ZIP: ' + file);
+  for (const [name, content] of source) {
+    assert.ok(
+      content.equals(fs.readFileSync(path.join(__dirname, '..', name))),
+      'Firefox source ZIP contains a stale file: ' + name
+    );
+  }
   console.log('Firefox reviewer source ZIP verified.');
 }
