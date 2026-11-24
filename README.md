@@ -12,7 +12,7 @@ A Chrome/Firefox/Edge new-tab extension featuring Chinese poetry and animated wa
 
 **Firefox 用户可直接从 [Firefox Add-ons 安装几枝·增强版](https://addons.mozilla.org/firefox/addon/%E5%87%A0%E6%9E%9D-%E5%A2%9E%E5%BC%BA%E7%89%88/)，安装后可长期使用并通过商店更新。**
 
-Firefox 商店当前提供 v2.5.2；GitHub 提供 v2.5.3。
+最新版本为 v2.5.3，商店版本将在审核通过后同步。
 
 [前往 GitHub Releases 查看所有版本](https://github.com/Amy22707/jizhi/releases)
 
