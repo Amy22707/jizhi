@@ -10,6 +10,10 @@ A Chrome/Firefox/Edge new-tab extension featuring Chinese poetry and animated wa
 
 **Chrome 用户可直接从 [Chrome 网上应用店安装几枝·增强版](https://chromewebstore.google.com/detail/nnjilbkjbojilaejcbiahecgpnjodjjd)。**
 
+**Firefox 用户可直接从 [Firefox Add-ons 安装几枝·增强版](https://addons.mozilla.org/firefox/addon/%E5%87%A0%E6%9E%9D-%E5%A2%9E%E5%BC%BA%E7%89%88/)，安装后可长期使用并通过商店更新。**
+
+Firefox 商店当前提供 v2.5.2；GitHub 提供 v2.5.3。
+
 [前往 GitHub Releases 查看所有版本](https://github.com/Amy22707/jizhi/releases)
 
 GitHub 最新版本为 [v2.5.3](https://github.com/Amy22707/jizhi/releases/tag/v2.5.3)。支持桌面版 Chrome、Microsoft Edge 和 Firefox 142+。下表提供手动加载用的 ZIP 安装包。
@@ -20,7 +24,7 @@ GitHub 最新版本为 [v2.5.3](https://github.com/Amy22707/jizhi/releases/tag/v
 | Edge | [edge.zip](https://github.com/Amy22707/jizhi/releases/download/v2.5.3/edge.zip) | 解压后打开 `edge://extensions/`，开启「开发人员模式」，点击「加载解压缩的扩展」，选择含 `manifest.json` 的目录。若提示扩展修改新标签页，选择「保留更改」。 |
 | Firefox 142+ | [firefox.zip](https://github.com/Amy22707/jizhi/releases/download/v2.5.3/firefox.zip) | 打开 `about:debugging#/runtime/this-firefox`，点击「临时载入附加组件」，选择 ZIP，或选择解压目录中的 `manifest.json`。 |
 
-**Firefox 当前提供未签名的 ZIP 安装包**，临时加载在浏览器重启后需要重新操作。签名后的 XPI 和扩展商店入口将在后续提供。
+Firefox 推荐通过上方商店入口安装。下表中的 GitHub ZIP 用于开发调试，临时加载在浏览器重启后需要重新操作。
 
 Chrome 和 Edge 更新本地构建后，可以在扩展卡片上点击「重新加载」。Firefox 也可在调试页面点击「重新载入」。
 
